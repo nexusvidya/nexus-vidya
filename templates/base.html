@@ -9,39 +9,91 @@
   {% block extra_head %}{% endblock %}
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Noto Sans Devanagari', sans-serif; background: #f8f5f0; color: #333; display: flex; min-height: 100vh; }
-    .public-sidebar { width: 260px; background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%); color: #fff; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; }
-    .sidebar-logo { padding: 20px 15px 15px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
-    .sidebar-logo img { max-width: 160px; width: 100%; height: auto; display: block; margin: 0 auto 8px; border-radius: 8px; }
+    body {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      background: #f8f5f0;
+      color: #333;
+      display: flex;
+      min-height: 100vh;
+    }
+    .public-sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 18px 15px 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .sidebar-logo img {
+      max-width: 150px;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 6px;
+      border-radius: 8px;
+    }
     .sidebar-logo a { text-decoration: none; display: block; }
-    .sidebar-tagline { font-size: 0.82rem; color: #e8c9a0; margin-top: 2px; }
+    .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; }
     .sidebar-nav { padding: 12px 0; flex: 1; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #f5e6d3; text-decoration: none; font-size: 0.96rem; transition: all 0.2s; border-left: 3px solid transparent; }
-    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 20px; color: #f5e6d3;
+      text-decoration: none; font-size: 0.95rem;
+      transition: all 0.2s; border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover {
+      background: rgba(255,255,255,0.1);
+      border-left-color: #ffb347; color: #fff;
+    }
     .sidebar-nav .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
-    .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); }
-    .sidebar-bottom a { display: block; text-align: center; background: #c45c26; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+    .sidebar-bottom {
+      padding: 15px 18px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .sidebar-bottom a {
+      display: block; text-align: center;
+      background: #c45c26; color: white;
+      padding: 10px; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: 0.95rem;
+    }
     .sidebar-bottom a:hover { background: #a0481c; }
-    .public-main { margin-left: 260px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
-    .top-bar { background: white; padding: 12px 25px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 50; }
-    .lang-switch { display: flex; gap: 8px; }
-    .lang-btn { padding: 6px 14px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; background: #f0e6d8; color: #5c2e0f; font-weight: 600; }
-    .lang-btn.active, .lang-btn:hover { background: #c45c26; color: white; }
-    .search-box { display: flex; border: 1px solid #ddd; border-radius: 25px; overflow: hidden; width: 280px; }
-    .search-box input { border: none; padding: 8px 15px; outline: none; flex: 1; font-size: 0.95rem; }
-    .search-box button { border: none; background: #c45c26; color: white; padding: 0 15px; cursor: pointer; }
-    .content-area { flex: 1; padding: 20px; }
-    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 25px 20px; font-size: 0.92rem; }
-    .site-footer p { margin: 5px 0; }
-    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: white; width: 58px; height: 58px; border-radius: 50%; font-size: 28px; box-shadow: 0 4px 14px rgba(0,0,0,0.3); z-index: 999; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.2s; }
+    .public-main {
+      margin-left: 260px;
+      flex: 1; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .content-area { flex: 1; padding: 0; }
+    .site-footer {
+      background: #2c1810; color: #f5e6d3;
+      text-align: center; padding: 22px 20px; font-size: 0.9rem;
+    }
+    .site-footer p { margin: 4px 0; }
+    .whatsapp-float {
+      position: fixed; bottom: 25px; right: 25px;
+      background: #25D366; color: white;
+      width: 56px; height: 56px; border-radius: 50%;
+      font-size: 26px; box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      z-index: 999; display: flex; align-items: center; justify-content: center;
+      text-decoration: none; transition: transform 0.2s;
+    }
     .whatsapp-float:hover { transform: scale(1.1); color: white; }
     @media (max-width: 768px) {
       .public-sidebar { width: 100%; height: auto; position: relative; }
       .public-main { margin-left: 0; }
       .sidebar-nav { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; }
-      .sidebar-nav a { padding: 8px 12px; border-left: none; border-radius: 6px; background: rgba(255,255,255,0.08); font-size: 0.88rem; }
-      .sidebar-logo img { max-width: 120px; }
-      .top-bar { flex-direction: column; gap: 10px; }
+      .sidebar-nav a {
+        padding: 8px 12px; border-left: none;
+        border-radius: 6px; background: rgba(255,255,255,0.08); font-size: 0.88rem;
+      }
+      .sidebar-logo img { max-width: 110px; }
     }
   </style>
 </head>
@@ -65,21 +117,12 @@
       <a href="{{ url_for('admin_login') }}">🔐 एडमिन लॉगिन</a>
     </div>
   </aside>
+
   <div class="public-main">
-    <div class="top-bar">
-      <div class="lang-switch">
-        <a href="?lang=hi" class="lang-btn active">हिंदी</a>
-        <a href="?lang=en" class="lang-btn">English</a>
-      </div>
-      <form action="{{ url_for('search') }}" method="get" class="search-box">
-        <input type="text" name="q" placeholder="यहाँ खोजें..." required>
-        <button type="submit">🔍</button>
-      </form>
-    </div>
     <div class="content-area">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-          <div style="margin-bottom:15px;">
+          <div style="padding:15px 20px 0;">
             {% for category, message in messages %}
               <div class="flash flash-{{ category }}">{{ message }}</div>
             {% endfor %}
@@ -93,6 +136,7 @@
       <p>&copy; 2026 Nexus Vidya — सभी अधिकार सुरक्षित</p>
     </footer>
   </div>
+
   <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener" title="WhatsApp पर बात करें">💬</a>
   {% block extra_js %}{% endblock %}
 </body>
