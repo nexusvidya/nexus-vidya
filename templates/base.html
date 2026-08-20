@@ -1,159 +1,53 @@
 <!DOCTYPE html>
-<html lang="{{ current_lang }}">
+<html lang="hi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}{{ t('site_name') }}{% endblock %} | Nexus Vidya</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>{% block title %}एडमिन{% endblock %} | Nexus Vidya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
   {% block extra_head %}{% endblock %}
 </head>
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Menu">☰</button>
-      <a href="{{ url_for('index') }}" class="logo">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Nexus Vidya" class="logo-img">
-      </a>
-      <nav class="main-nav" id="mainNav">
-        <a href="{{ url_for('index') }}">{{ t('home') }}</a>
-        <!-- categories injected by JS -->
-      </nav>
-      <div class="header-actions">
-        <div class="lang-switch">
-          <a href="{{ url_for('set_lang', lang='hi') }}" class="{% if current_lang == 'hi' %}active{% endif %}">हिंदी</a>
-          <a href="{{ url_for('set_lang', lang='en') }}" class="{% if current_lang == 'en' %}active{% endif %}">EN</a>
-        </div>
-        <form action="{{ url_for('search') }}" method="get" class="search-form">
-          <input type="search" name="q" placeholder="{{ t('search_placeholder') }}" value="{{ request.args.get('q', '') }}">
-          <button type="submit">🔍</button>
-        </form>
-        <a href="{{ url_for('admin_login') }}" class="btn-admin">{{ t('admin') }}</a>
-      </div>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span>✦</span>
+      <strong>Nexus Vidya</strong>
     </div>
-  </header>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">📊 डैशबोर्ड</a>
+      <a href="{{ url_for('admin_posts') }}" class="{% if 'post' in request.endpoint %}active{% endif %}">📝 पोस्ट्स</a>
+      <a href="{{ url_for('admin_post_new') }}" class="{% if request.endpoint == 'admin_post_new' %}active{% endif %}">➕ नया पोस्ट</a>
+      <a href="{{ url_for('admin_categories') }}" class="{% if 'categor' in request.endpoint %}active{% endif %}">📁 कैटेगरी</a>
+      <a href="{{ url_for('admin_change_password') }}" class="{% if request.endpoint == 'admin_change_password' %}active{% endif %}">🔐 पासवर्ड बदलें</a>
+      <a href="{{ url_for('index') }}" target="_blank">🌐 वेबसाइट देखें</a>
+      <a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 लॉगआउट</a>
+    </nav>
+  </aside>
 
-  <div class="layout-with-sidebar">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-head">
-        <strong>📚 {{ t('categories') }}</strong>
-        <button class="sidebar-close" id="sidebarClose" type="button">✕</button>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <h2>{% block page_title %}एडमिन{% endblock %}</h2>
+      <div class="topbar-user">
+        👤 {{ session.get('full_name') or session.get('username') }}
       </div>
-      <a href="{{ url_for('index') }}" class="sidebar-link">🏠 {{ t('home') }}</a>
-      <div id="sidebarCats"><p class="sidebar-loading">लोड...</p></div>
-      <div class="sidebar-contact">
-        <strong>📞 संपर्क</strong>
-        <a href="tel:7317055531">7317055531</a>
-        <a class="wa-btn" href="https://wa.me/917317055531" target="_blank" rel="noopener">WhatsApp</a>
-      </div>
-    </aside>
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    </header>
 
-    <div class="main-wrap">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="flash-container">
-            {% for category, message in messages %}
-              <div class="flash flash-{{ category }}">{{ message }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-
-      <main class="main-content">
-        {% block content %}{% endblock %}
-      </main>
-
-      <footer class="site-footer">
-        <div class="container">
-          <div class="footer-grid">
-            <div>
-              <h3>✦ Nexus Vidya</h3>
-              <p>{{ t('footer_text') }}</p>
-            </div>
-            <div>
-              <h4>{{ t('categories') }}</h4>
-              <div id="footerCats"></div>
-            </div>
-            <div>
-              <h4>संपर्क / Contact</h4>
-              <p><a href="tel:7317055531">📞 7317055531</a></p>
-              <p><a href="https://wa.me/917317055531" target="_blank" rel="noopener">💬 WhatsApp</a></p>
-              <p><a href="{{ url_for('admin_login') }}">{{ t('admin') }}</a></p>
-            </div>
-          </div>
-          <div class="footer-bottom">
-            <p>© 2026 Nexus Vidya • {{ t('all_rights') }}</p>
-          </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container admin-flash">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
         </div>
-      </footer>
+      {% endif %}
+    {% endwith %}
+
+    <div class="admin-content">
+      {% block content %}{% endblock %}
     </div>
   </div>
-
-  <!-- Floating WhatsApp -->
-  <a href="https://wa.me/917317055531" class="wa-float" target="_blank" rel="noopener" title="WhatsApp">💬</a>
-
-  <div id="google_translate_element" class="gtranslate-box"></div>
-  <script>
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'hi',
-        includedLanguages: 'hi,en,bn,ta,te,mr,gu,kn,ml,pa,ur,es,fr,de,ar,zh-CN,ja,ru',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-  <script>
-  (function () {
-    function addCatLinks(cats, target, className) {
-      if (!target || !cats) return;
-      target.innerHTML = '';
-      cats.forEach(function (c) {
-        var a = document.createElement('a');
-        a.href = '/category/' + encodeURIComponent(c.slug);
-        a.className = className || '';
-        a.textContent = (c.icon ? c.icon + ' ' : '') + c.name;
-        target.appendChild(a);
-      });
-    }
-
-    fetch('/api/nav-categories')
-      .then(function (r) { return r.json(); })
-      .then(function (cats) {
-        var top = document.getElementById('mainNav');
-        if (top) {
-          // keep Home link, append categories
-          cats.forEach(function (c) {
-            var a = document.createElement('a');
-            a.href = '/category/' + encodeURIComponent(c.slug);
-            a.textContent = (c.icon ? c.icon + ' ' : '') + c.name;
-            top.appendChild(a);
-          });
-        }
-        addCatLinks(cats, document.getElementById('sidebarCats'), 'sidebar-link');
-        addCatLinks(cats, document.getElementById('footerCats'), '');
-      })
-      .catch(function () {
-        var box = document.getElementById('sidebarCats');
-        if (box) box.innerHTML = '<p class="sidebar-loading">कैटेगरी लोड नहीं हुई</p>';
-      });
-
-    var toggle = document.getElementById('menuToggle');
-    var sidebar = document.getElementById('sidebar');
-    var overlay = document.getElementById('sidebarOverlay');
-    var closeBtn = document.getElementById('sidebarClose');
-    function openNav() { if (sidebar) sidebar.classList.add('open'); if (overlay) overlay.classList.add('show'); }
-    function closeNav() { if (sidebar) sidebar.classList.remove('open'); if (overlay) overlay.classList.remove('show'); }
-    if (toggle) toggle.addEventListener('click', openNav);
-    if (closeBtn) closeBtn.addEventListener('click', closeNav);
-    if (overlay) overlay.addEventListener('click', closeNav);
-  })();
-  </script>
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>
