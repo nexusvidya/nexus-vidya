@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Nexus Vidya{% endblock %} | ज्ञान का केंद्र</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+  {% block extra_head %}{% endblock %}
+
+  <style>
+    /* WhatsApp Floating Button */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      color: white;
+    }
+
+    /* Header */
+    .site-header {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #c45c26;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .main-nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .main-nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .main-nav a:hover {
+      color: #c45c26;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-form {
+      display: flex;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .search-form input {
+      border: none;
+      padding: 7px 12px;
+      outline: none;
+      width: 160px;
+    }
+    .search-form button {
+      border: none;
+      background: #c45c26;
+      color: white;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+    .admin-link {
+      background: #c45c26;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .site-footer {
+      background: #2c1810;
+      color: #f5e6d3;
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 50px;
+    }
+    .site-footer p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .main-nav {
+        display: none;
+      }
+      .search-form input {
+        width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{{ url_for('index') }}" class="logo">
+        <span>✦</span> Nexus Vidya
+      </a>
+
+      <nav class="main-nav">
+        <a href="{{ url_for('index') }}">होम</a>
+        {% for cat in nav_categories %}
+          <a href="{{ url_for('category_page', slug=cat.slug) }}">
+            {{ cat.icon or '📚' }} {{ cat.name }}
+          </a>
+        {% endfor %}
+      </nav>
+
+      <div class="header-right">
+        <form action="{{ url_for('search') }}" method="get" class="search-form">
+          <input type="text" name="q" placeholder="खोजें..." required>
+          <button type="submit">🔍</button>
+        </form>
+        <a href="{{ url_for('admin_login') }}" class="admin-link">एडमिन</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container" style="max-width:1200px;margin:15px auto;padding:0 20px;">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>{{ t('footer_text') if t is defined else 'ज्ञान, ज्योतिष, वास्तु, करंट अफेयर्स और हर विषय का खजाना।' }}</p>
+      <p>&copy; 2026 Nexus Vidya — सभी अधिकार सुरक्षित</p>
+    </div>
+  </footer>
+
+  <!-- ========== WhatsApp FLOATING BUTTON ========== -->
+  <!-- अपना नंबर यहाँ डालो (91 के बाद 10 अंक) उदाहरण: 919876543210 -->
+  <a href="https://wa.me/91XXXXXXXXXX" 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener"
+     title="WhatsApp पर बात करें">
+    💬
+  </a>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
