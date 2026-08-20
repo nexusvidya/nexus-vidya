@@ -1,0 +1,110 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ 'पोस्ट एडिट' if post else 'नया पोस्ट' }}{% endblock %}
+{% block page_title %}{{ '✏️ पोस्ट एडिट करें' if post else '➕ नया पोस्ट बनाएँ' }}{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+  <form method="post" enctype="multipart/form-data" class="post-form">
+    <div class="form-group">
+      <label>शीर्षक *</label>
+      <input type="text" name="title" required value="{{ post.title if post else '' }}" placeholder="पोस्ट का शीर्षक लिखें...">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>कैटेगरी</label>
+        <select name="category_id">
+          <option value="">— चुनें —</option>
+          {% for c in categories %}
+          <option value="{{ c.id }}" {% if post and post.category_id == c.id %}selected{% endif %}>
+            {{ c.icon }} {{ c.name }}{% if c.parent_id %} (सब){% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>स्टेटस</label>
+        <select name="status">
+          <option value="published" {% if not post or post.status == 'published' %}selected{% endif %}>प्रकाशित</option>
+          <option value="draft" {% if post and post.status == 'draft' %}selected{% endif %}>ड्राफ्ट</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>संक्षिप्त विवरण (Excerpt)</label>
+      <textarea name="excerpt" rows="2" placeholder="संक्षेप में क्या है यह लेख...">{{ post.excerpt if post else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>मुख्य सामग्री / लेख</label>
+      <textarea name="content" id="content" rows="18" placeholder="यहाँ अपना लेख लिखें...
+
+उदाहरण:
+परिचय
+
+यह लेख ज्योतिष के बारे में है।
+
+मुख्य बिंदु
+
+पहला बिंदु यहाँ लिखें।
+दूसरा बिंदु यहाँ लिखें।
+
+निष्कर्ष
+
+लेख का सार यहाँ।">{{ post.content if post else '' }}</textarea>
+      <div class="format-help">
+        <strong>फॉर्मेट कैसे रखें:</strong>
+        <ul>
+          <li>हर नए पैराग्राफ के बीच <b>एक खाली लाइन</b> छोड़ें</li>
+          <li>शीर्षक / परिचय / मुख्य बिंदु अलग-अलग पैराग्राफ में लिखें</li>
+          <li>क्रम अपने आप सही रहेगा — सब एक साथ नहीं जुड़ेगा</li>
+          <li>चाहें तो HTML भी लिख सकते हैं: &lt;h2&gt;शीर्षक&lt;/h2&gt;, &lt;b&gt;मोटा&lt;/b&gt;, &lt;br&gt;</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>फीचर्ड इमेज (मुख्य फोटो)</label>
+      {% if post and post.featured_image %}
+      <div class="current-media">
+        <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="featured" style="max-height:120px;border-radius:8px">
+        <small>वर्तमान इमेज</small>
+      </div>
+      {% endif %}
+      <input type="file" name="featured_image" accept="image/*">
+    </div>
+
+    <div class="form-group">
+      <label>अतिरिक्त फोटो / वीडियो अपलोड करें</label>
+      <input type="file" name="media_files" accept="image/*,video/*" multiple>
+      <small class="text-muted">एक साथ कई फाइलें चुन सकते हैं (JPG, PNG, WEBP, MP4, WEBM आदि)</small>
+    </div>
+
+    {% if media %}
+    <div class="form-group">
+      <label>मौजूदा मीडिया</label>
+      <div class="media-list">
+        {% for m in media %}
+        <div class="media-item">
+          {% if m.media_type == 'video' %}
+          <video src="{{ url_for('static', filename='uploads/' + m.filename) }}" style="max-height:80px" controls></video>
+          {% else %}
+          <img src="{{ url_for('static', filename='uploads/' + m.filename) }}" style="max-height:80px;border-radius:6px">
+          {% endif %}
+          <form method="post" action="{{ url_for('admin_media_delete', id=m.id) }}" onsubmit="return confirm('मीडिया हटाएँ?')">
+            <button type="submit" class="btn btn-sm btn-danger">हटाएँ</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary btn-lg">💾 {% if post %}अपडेट करें{% else %}पोस्ट प्रकाशित करें{% endif %}</button>
+      <a href="{{ url_for('admin_posts') }}" class="btn">रद्द करें</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

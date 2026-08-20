@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('index') }}">होम</a> → <span>{{ category.name }}</span>
+    </div>
+    <h1>{{ category.icon }} {{ category.name }}</h1>
+    {% if category.description %}
+    <p class="page-desc">{{ category.description }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if subcategories %}
+<section class="subcat-section">
+  <div class="container">
+    <h2 class="section-title">📁 {{ t('subcategories') }}</h2>
+    <div class="category-grid small">
+      {% for sub in subcategories %}
+      <a href="{{ url_for('category_page', slug=sub.slug) }}" class="category-card">
+        <span class="cat-icon">{{ sub.icon }}</span>
+        <h3>{{ sub.name }}</h3>
+        <p>{{ sub.description or '' }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="posts-section">
+  <div class="container">
+    <h2 class="section-title">{{ t('articles') }} ({{ posts|length }})</h2>
+    {% if posts %}
+    <div class="post-grid">
+      {% for post in posts %}
+      <article class="post-card">
+        {% if post.featured_image %}
+        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb">
+          <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}" loading="lazy">
+        </a>
+        {% else %}
+        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb placeholder">
+          <span>📄</span>
+        </a>
+        {% endif %}
+        <div class="post-body">
+          <h3><a href="{{ url_for('post_page', slug=post.slug) }}">{{ post.title }}</a></h3>
+          <p class="post-excerpt">{{ post.excerpt or (post.content[:120] + '...') if post.content else '' }}</p>
+          <div class="post-meta">
+            <span>📅 {{ post.created_at[:10] if post.created_at else '' }}</span>
+            <span>👁️ {{ post.views or 0 }}</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>इस श्रेणी में अभी कोई लेख नहीं है।</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}खोज{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>🔍 {{ t('search_results') }}</h1>
+    {% if query %}
+    <p class="page-desc">"{{ query }}" के लिए {{ posts|length }} परिणाम मिले</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="posts-section">
+  <div class="container">
+    {% if posts %}
+    <div class="post-grid">
+      {% for post in posts %}
+      <article class="post-card">
+        {% if post.featured_image %}
+        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb">
+          <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}" loading="lazy">
+        </a>
+        {% else %}
+        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb placeholder">
+          <span>{{ post.category_icon or '📄' }}</span>
+        </a>
+        {% endif %}
+        <div class="post-body">
+          {% if post.category_name %}
+          <span class="post-cat">{{ post.category_icon }} {{ post.category_name }}</span>
+          {% endif %}
+          <h3><a href="{{ url_for('post_page', slug=post.slug) }}">{{ post.title }}</a></h3>
+          <p class="post-excerpt">{{ post.excerpt or (post.content[:120] + '...') if post.content else '' }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>{% if query %}{{ t('no_results') }}{% else %}कृपया कुछ खोजें।{% endif %}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

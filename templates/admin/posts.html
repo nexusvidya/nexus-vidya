@@ -1,0 +1,51 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}पोस्ट्स{% endblock %}
+{% block page_title %}📝 सभी पोस्ट्स{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+  <div class="card-header">
+    <h3>पोस्ट्स ({{ posts|length }})</h3>
+    <a href="{{ url_for('admin_post_new') }}" class="btn btn-primary">+ नया पोस्ट बनाएँ</a>
+  </div>
+  {% if posts %}
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>शीर्षक</th>
+        <th>कैटेगरी</th>
+        <th>स्टेटस</th>
+        <th>व्यूज</th>
+        <th>तारीख</th>
+        <th>एक्शन</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in posts %}
+      <tr>
+        <td>
+          <strong>{{ p.title[:60] }}{% if p.title|length > 60 %}...{% endif %}</strong>
+          {% if p.featured_image %}
+          <br><small>🖼️ फीचर्ड इमेज</small>
+          {% endif %}
+        </td>
+        <td>{{ p.category_name or '—' }}</td>
+        <td><span class="badge badge-{{ p.status }}">{{ 'प्रकाशित' if p.status == 'published' else 'ड्राफ्ट' }}</span></td>
+        <td>{{ p.views or 0 }}</td>
+        <td>{{ p.created_at[:10] if p.created_at else '' }}</td>
+        <td class="actions">
+          <a href="{{ url_for('post_page', slug=p.slug) }}" target="_blank" class="btn btn-sm">देखें</a>
+          <a href="{{ url_for('admin_post_edit', id=p.id) }}" class="btn btn-sm">एडिट</a>
+          <form method="post" action="{{ url_for('admin_post_delete', id=p.id) }}" style="display:inline" onsubmit="return confirm('पोस्ट हटाएँ?')">
+            <button type="submit" class="btn btn-sm btn-danger">हटाएँ</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty-msg">अभी कोई पोस्ट नहीं। <a href="{{ url_for('admin_post_new') }}">पहला पोस्ट लिखें</a></p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="single-post">
+  <div class="container narrow">
+    <div class="breadcrumb">
+      <a href="{{ url_for('index') }}">होम</a>
+      {% if post.category_slug %}
+      → <a href="{{ url_for('category_page', slug=post.category_slug) }}">{{ post.category_name }}</a>
+      {% endif %}
+      → <span>{{ post.title[:40] }}{% if post.title|length > 40 %}...{% endif %}</span>
+    </div>
+
+    <header class="post-header">
+      {% if post.category_name %}
+      <a href="{{ url_for('category_page', slug=post.category_slug) }}" class="post-cat">{{ post.category_icon }} {{ post.category_name }}</a>
+      {% endif %}
+      <h1>{{ post.title }}</h1>
+      <div class="post-meta">
+        <span>✍️ {{ post.author_name or 'एडमिन' }}</span>
+        <span>📅 {{ post.created_at[:16] if post.created_at else '' }}</span>
+        <span>👁️ {{ post.views or 0 }} {{ t('views') }}</span>
+      </div>
+    </header>
+
+    {% if post.featured_image %}
+    <div class="featured-image">
+      <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}">
+    </div>
+    {% endif %}
+
+    <div class="post-content">
+      {{ post.content | format_content }}
+    </div>
+
+    {% if media %}
+    <div class="media-gallery">
+      <h3>📷 {{ t('media_gallery') }}</h3>
+      <div class="gallery-grid">
+        {% for m in media %}
+        <div class="gallery-item">
+          {% if m.media_type == 'video' %}
+          <video controls preload="metadata">
+            <source src="{{ url_for('static', filename='uploads/' + m.filename) }}" type="video/mp4">
+            आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
+          </video>
+          {% else %}
+          <a href="{{ url_for('static', filename='uploads/' + m.filename) }}" target="_blank">
+            <img src="{{ url_for('static', filename='uploads/' + m.filename) }}" alt="{{ m.original_name }}" loading="lazy">
+          </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</article>
+
+{% if related %}
+<section class="related-section">
+  <div class="container">
+    <h2 class="section-title">{{ t('related') }}</h2>
+    <div class="post-grid">
+      {% for r in related %}
+      <article class="post-card">
+        {% if r.featured_image %}
+        <a href="{{ url_for('post_page', slug=r.slug) }}" class="post-thumb">
+          <img src="{{ url_for('static', filename='uploads/' + r.featured_image) }}" alt="{{ r.title }}" loading="lazy">
+        </a>
+        {% else %}
+        <a href="{{ url_for('post_page', slug=r.slug) }}" class="post-thumb placeholder"><span>📄</span></a>
+        {% endif %}
+        <div class="post-body">
+          <h3><a href="{{ url_for('post_page', slug=r.slug) }}">{{ r.title }}</a></h3>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

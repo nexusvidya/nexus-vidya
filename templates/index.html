@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ t('home') }}{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <h1>Nexus Vidya</h1>
+    <p class="hero-sub">{{ t('tagline') }}</p>
+    <p class="hero-desc">
+      {% if current_lang == 'en' %}
+      Astrology • Vastu • Vedic Neurology • Numerology • Current Affairs • And every subject you explore.
+      {% else %}
+      ज्योतिष • वास्तु • वैदिक न्यूरोलॉजी • न्यूमेरोलॉजी • करंट अफेयर्स • और जो भी आप पढ़ें-लिखें।
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="categories-section">
+  <div class="container">
+    <h2 class="section-title">📚 {{ t('main_topics') }}</h2>
+    <div class="category-grid">
+      {% for cat in categories %}
+      <a href="{{ url_for('category_page', slug=cat.slug) }}" class="category-card">
+        <span class="cat-icon">{{ cat.icon }}</span>
+        <h3>{{ cat.name }}</h3>
+        <p>{{ cat.description or '' }}</p>
+      </a>
+      {% else %}
+      <p class="empty-msg">{{ t('no_posts') }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="posts-section">
+  <div class="container">
+    <h2 class="section-title">✨ {{ t('latest_posts') }}</h2>
+    {% if posts %}
+    <div class="post-grid">
+      {% for post in posts %}
+      <article class="post-card">
+        {% if post.featured_image %}
+        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb">
+          <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}" loading="lazy">
+        </a>
+        {% else %}
+        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb placeholder">
+          <span>{{ post.category_icon or '📄' }}</span>
+        </a>
+        {% endif %}
+        <div class="post-body">
+          {% if post.category_name %}
+          <a href="{{ url_for('category_page', slug=post.category_slug) }}" class="post-cat">{{ post.category_icon }} {{ post.category_name }}</a>
+          {% endif %}
+          <h3><a href="{{ url_for('post_page', slug=post.slug) }}">{{ post.title }}</a></h3>
+          <p class="post-excerpt">{{ post.excerpt or (post.content[:120] + '...') if post.content else '' }}</p>
+          <div class="post-meta">
+            <span>📅 {{ post.created_at[:10] if post.created_at else '' }}</span>
+            <span>👁️ {{ post.views or 0 }}</span>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>{{ t('no_posts') }}</p>
+      <a href="{{ url_for('admin_login') }}" class="btn btn-primary">{{ t('admin') }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

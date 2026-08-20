@@ -1,0 +1,73 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}डैशबोर्ड{% endblock %}
+{% block page_title %}📊 डैशबोर्ड{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">📝</div>
+    <div class="stat-info">
+      <div class="stat-num">{{ stats.posts }}</div>
+      <div class="stat-label">कुल पोस्ट्स</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📁</div>
+    <div class="stat-info">
+      <div class="stat-num">{{ stats.categories }}</div>
+      <div class="stat-label">कैटेगरी</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🖼️</div>
+    <div class="stat-info">
+      <div class="stat-num">{{ stats.media }}</div>
+      <div class="stat-label">मीडिया फाइलें</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">👁️</div>
+    <div class="stat-info">
+      <div class="stat-num">{{ stats.views }}</div>
+      <div class="stat-label">कुल व्यूज</div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <div class="card-header">
+    <h3>नवीनतम पोस्ट्स</h3>
+    <a href="{{ url_for('admin_post_new') }}" class="btn btn-sm btn-primary">+ नया पोस्ट</a>
+  </div>
+  {% if recent %}
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>शीर्षक</th>
+        <th>कैटेगरी</th>
+        <th>स्टेटस</th>
+        <th>व्यूज</th>
+        <th>तारीख</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in recent %}
+      <tr>
+        <td><strong>{{ p.title[:50] }}{% if p.title|length > 50 %}...{% endif %}</strong></td>
+        <td>{{ p.category_name or '—' }}</td>
+        <td><span class="badge badge-{{ p.status }}">{{ 'प्रकाशित' if p.status == 'published' else 'ड्राफ्ट' }}</span></td>
+        <td>{{ p.views or 0 }}</td>
+        <td>{{ p.created_at[:10] if p.created_at else '' }}</td>
+        <td>
+          <a href="{{ url_for('admin_post_edit', id=p.id) }}" class="btn btn-sm">एडिट</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty-msg">अभी कोई पोस्ट नहीं है। <a href="{{ url_for('admin_post_new') }}">पहला पोस्ट बनाएँ</a></p>
+  {% endif %}
+</div>
+{% endblock %}

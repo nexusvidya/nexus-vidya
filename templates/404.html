@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}पेज नहीं मिला{% endblock %}
+
+{% block content %}
+<section class="empty-state" style="padding: 80px 20px; text-align: center;">
+  <div class="container">
+    <h1 style="font-size: 4rem; margin-bottom: 10px;">404</h1>
+    <p style="font-size: 1.3rem; margin-bottom: 25px;">यह पेज मौजूद नहीं है।</p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">होम पेज पर जाएँ</a>
+  </div>
+</section>
+{% endblock %}

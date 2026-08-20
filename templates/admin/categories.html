@@ -1,0 +1,133 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}कैटेगरी{% endblock %}
+{% block page_title %}📁 कैटेगरी प्रबंधन{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+  <div class="card-header">
+    <h3>नई कैटेगरी / सब-कैटेगरी बनाएँ</h3>
+  </div>
+  <form method="post" action="{{ url_for('admin_category_add') }}" class="form-grid">
+    <div class="form-group">
+      <label>नाम *</label>
+      <input type="text" name="name" required placeholder="जैसे: ग्रह गोचर">
+    </div>
+    <div class="form-group">
+      <label>आइकन (इमोजी)</label>
+      <input type="text" name="icon" placeholder="📚" maxlength="4">
+    </div>
+    <div class="form-group">
+      <label>पैरेंट कैटेगरी (सब-कैटेगरी के लिए)</label>
+      <select name="parent_id">
+        <option value="">— मुख्य कैटेगरी —</option>
+        {% for p in parents %}
+        <option value="{{ p.id }}">{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group full">
+      <label>विवरण</label>
+      <textarea name="description" rows="2" placeholder="संक्षिप्त विवरण..."></textarea>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">➕ कैटेगरी बनाएँ</button>
+    </div>
+  </form>
+</div>
+
+<div class="admin-card">
+  <div class="card-header">
+    <h3>सभी कैटेगरी ({{ categories|length }})</h3>
+  </div>
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>आइकन</th>
+        <th>नाम</th>
+        <th>पैरेंट</th>
+        <th>पोस्ट्स</th>
+        <th>स्टेटस</th>
+        <th>एक्शन</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in categories %}
+      <tr>
+        <td style="font-size:1.4rem">{{ c.icon }}</td>
+        <td>
+          <strong>{{ c.name }}</strong>
+          <br><small class="text-muted">/{{ c.slug }}</small>
+        </td>
+        <td>{{ c.parent_name or '—' }}</td>
+        <td>{{ c.post_count }}</td>
+        <td>
+          <span class="badge badge-{{ 'published' if c.is_active else 'draft' }}">
+            {{ 'सक्रिय' if c.is_active else 'निष्क्रिय' }}
+          </span>
+        </td>
+        <td class="actions">
+          <button type="button" class="btn btn-sm" onclick="openEdit({{ c.id }}, '{{ c.name|e }}', '{{ (c.description or '')|e }}', '{{ c.icon|e }}', '{{ c.parent_id or '' }}', {{ c.is_active }})">एडिट</button>
+          <form method="post" action="{{ url_for('admin_category_delete', id=c.id) }}" style="display:inline" onsubmit="return confirm('क्या आप वाकई हटाना चाहते हैं?')">
+            <button type="submit" class="btn btn-sm btn-danger">हटाएँ</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty-msg">कोई कैटेगरी नहीं</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3>कैटेगरी एडिट करें</h3>
+    <form method="post" id="editForm">
+      <div class="form-group">
+        <label>नाम *</label>
+        <input type="text" name="name" id="editName" required>
+      </div>
+      <div class="form-group">
+        <label>आइकन</label>
+        <input type="text" name="icon" id="editIcon" maxlength="4">
+      </div>
+      <div class="form-group">
+        <label>पैरेंट</label>
+        <select name="parent_id" id="editParent">
+          <option value="">— मुख्य कैटेगरी —</option>
+          {% for p in parents %}
+          <option value="{{ p.id }}">{{ p.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>विवरण</label>
+        <textarea name="description" id="editDesc" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" name="is_active" id="editActive" value="1"> सक्रिय</label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">सेव करें</button>
+        <button type="button" class="btn" onclick="closeEdit()">रद्द</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(id, name, desc, icon, parent, active) {
+  document.getElementById('editForm').action = '/admin/categories/edit/' + id;
+  document.getElementById('editName').value = name;
+  document.getElementById('editDesc').value = desc;
+  document.getElementById('editIcon').value = icon;
+  document.getElementById('editParent').value = parent || '';
+  document.getElementById('editActive').checked = active == 1;
+  document.getElementById('editModal').style.display = 'flex';
+}
+function closeEdit() {
+  document.getElementById('editModal').style.display = 'none';
+}
+</script>
+{% endblock %}

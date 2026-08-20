@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}एडमिन{% endblock %} | Nexus Vidya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <span>✦</span>
+      <strong>Nexus Vidya</strong>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">📊 डैशबोर्ड</a>
+      <a href="{{ url_for('admin_posts') }}" class="{% if 'post' in request.endpoint %}active{% endif %}">📝 पोस्ट्स</a>
+      <a href="{{ url_for('admin_post_new') }}" class="{% if request.endpoint == 'admin_post_new' %}active{% endif %}">➕ नया पोस्ट</a>
+      <a href="{{ url_for('admin_categories') }}" class="{% if 'categor' in request.endpoint %}active{% endif %}">📁 कैटेगरी</a>
+      <a href="{{ url_for('index') }}" target="_blank">🌐 वेबसाइट देखें</a>
+      <a href="{{ url_for('admin_logout') }}" class="logout-link">🚪 लॉगआउट</a>
+    </nav>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <h2>{% block page_title %}एडमिन{% endblock %}</h2>
+      <div class="topbar-user">
+        👤 {{ session.get('full_name') or session.get('username') }}
+      </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container admin-flash">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="admin-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
