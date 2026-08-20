@@ -1,84 +1,88 @@
 {% extends "base.html" %}
+
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-<article class="single-post">
-  <div class="container narrow">
-    <div class="breadcrumb">
-      <a href="{{ url_for('index') }}">होम</a>
-      {% if post.category_slug %}
-      → <a href="{{ url_for('category_page', slug=post.category_slug) }}">{{ post.category_name }}</a>
+<style>
+  .post-container {
+    max-width: 860px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .post-header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e8d9c8;
+    padding-bottom: 18px;
+  }
+  .post-header h1 {
+    font-size: 1.8rem;
+    color: #3d1c08;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .post-meta {
+    font-size: 0.9rem;
+    color: #777;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .post-meta span {
+    background: #f5ebe0;
+    padding: 3px 10px;
+    border-radius: 12px;
+  }
+  .post-body {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #333;
+  }
+  .post-body p {
+    margin-bottom: 14px;
+  }
+  .post-body h2, .post-body h3 {
+    margin-top: 25px;
+    margin-bottom: 12px;
+    color: #5c2e0f;
+  }
+  .post-body ul, .post-body ol {
+    margin: 12px 0 12px 25px;
+  }
+  .post-body li {
+    margin-bottom: 6px;
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 30px;
+    color: #c45c26;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="post-container">
+  <div class="post-header">
+    <h1>{{ post.title }}</h1>
+    <div class="post-meta">
+      {% if post.category %}
+        <span>📁 {{ post.category.name }}</span>
       {% endif %}
-      → <span>{{ post.title[:40] }}{% if post.title|length > 40 %}...{% endif %}</span>
-    </div>
-
-    <header class="post-header">
-      {% if post.category_name %}
-      <a href="{{ url_for('category_page', slug=post.category_slug) }}" class="post-cat">{{ post.category_icon }} {{ post.category_name }}</a>
+      {% if post.created_at %}
+        <span>📅 {{ post.created_at.strftime('%d-%m-%Y') }}</span>
       {% endif %}
-      <h1>{{ post.title }}</h1>
-      <div class="post-meta">
-        <span>✍️ {{ post.author_name or 'एडमिन' }}</span>
-        <span>📅 {{ post.created_at[:16] if post.created_at else '' }}</span>
-        <span>👁️ {{ post.views or 0 }} {{ t('views') }}</span>
-      </div>
-    </header>
-
-    {% if post.featured_image %}
-    <div class="featured-image">
-      <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}">
-    </div>
-    {% endif %}
-
-    <div class="post-content">
-      {{ post.content | format_content }}
-    </div>
-
-    {% if media %}
-    <div class="media-gallery">
-      <h3>📷 {{ t('media_gallery') }}</h3>
-      <div class="gallery-grid">
-        {% for m in media %}
-        <div class="gallery-item">
-          {% if m.media_type == 'video' %}
-          <video controls preload="metadata">
-            <source src="{{ url_for('static', filename='uploads/' + m.filename) }}" type="video/mp4">
-            आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
-          </video>
-          {% else %}
-          <a href="{{ url_for('static', filename='uploads/' + m.filename) }}" target="_blank">
-            <img src="{{ url_for('static', filename='uploads/' + m.filename) }}" alt="{{ m.original_name }}" loading="lazy">
-          </a>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-  </div>
-</article>
-
-{% if related %}
-<section class="related-section">
-  <div class="container">
-    <h2 class="section-title">{{ t('related') }}</h2>
-    <div class="post-grid">
-      {% for r in related %}
-      <article class="post-card">
-        {% if r.featured_image %}
-        <a href="{{ url_for('post_page', slug=r.slug) }}" class="post-thumb">
-          <img src="{{ url_for('static', filename='uploads/' + r.featured_image) }}" alt="{{ r.title }}" loading="lazy">
-        </a>
-        {% else %}
-        <a href="{{ url_for('post_page', slug=r.slug) }}" class="post-thumb placeholder"><span>📄</span></a>
-        {% endif %}
-        <div class="post-body">
-          <h3><a href="{{ url_for('post_page', slug=r.slug) }}">{{ r.title }}</a></h3>
-        </div>
-      </article>
-      {% endfor %}
+      {% if post.views %}
+        <span>👁 {{ post.views }} व्यूज</span>
+      {% endif %}
     </div>
   </div>
-</section>
-{% endif %}
+
+  <div class="post-body">
+    {{ post.content|safe }}
+  </div>
+
+  <a href="{{ url_for('index') }}" class="back-link">← वापस होम पर जाएं</a>
+</div>
 {% endblock %}
