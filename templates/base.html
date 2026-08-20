@@ -20,7 +20,6 @@
       min-height: 100vh;
     }
 
-    /* ===== LEFT SIDEBAR ===== */
     .public-sidebar {
       width: 260px;
       background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%);
@@ -47,20 +46,14 @@
       margin: 0 auto 8px;
       border-radius: 8px;
     }
-    .sidebar-logo a {
-      text-decoration: none;
-      display: block;
-    }
+    .sidebar-logo a { text-decoration: none; display: block; }
     .sidebar-tagline {
       font-size: 0.82rem;
       color: #e8c9a0;
       margin-top: 2px;
     }
 
-    .sidebar-nav {
-      padding: 12px 0;
-      flex: 1;
-    }
+    .sidebar-nav { padding: 12px 0; flex: 1; }
     .sidebar-nav a {
       display: flex;
       align-items: center;
@@ -98,11 +91,8 @@
       font-weight: 600;
       font-size: 0.95rem;
     }
-    .sidebar-bottom a:hover {
-      background: #a0481c;
-    }
+    .sidebar-bottom a:hover { background: #a0481c; }
 
-    /* ===== MAIN CONTENT ===== */
     .public-main {
       margin-left: 260px;
       flex: 1;
@@ -116,12 +106,31 @@
       padding: 12px 25px;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
       position: sticky;
       top: 0;
       z-index: 50;
     }
+
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      background: #f0e6d8;
+      color: #5c2e0f;
+      font-weight: 600;
+    }
+    .lang-btn.active, .lang-btn:hover {
+      background: #c45c26;
+      color: white;
+    }
+
     .search-box {
       display: flex;
       border: 1px solid #ddd;
@@ -144,10 +153,7 @@
       cursor: pointer;
     }
 
-    .content-area {
-      flex: 1;
-      padding: 20px;
-    }
+    .content-area { flex: 1; padding: 20px; }
 
     .site-footer {
       background: #2c1810;
@@ -158,7 +164,6 @@
     }
     .site-footer p { margin: 5px 0; }
 
-    /* WhatsApp */
     .whatsapp-float {
       position: fixed;
       bottom: 25px;
@@ -188,9 +193,7 @@
         height: auto;
         position: relative;
       }
-      .public-main {
-        margin-left: 0;
-      }
+      .public-main { margin-left: 0; }
       .sidebar-nav {
         display: flex;
         flex-wrap: wrap;
@@ -204,15 +207,13 @@
         background: rgba(255,255,255,0.08);
         font-size: 0.88rem;
       }
-      .sidebar-logo img {
-        max-width: 120px;
-      }
+      .sidebar-logo img { max-width: 120px; }
+      .top-bar { flex-direction: column; gap: 10px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ========== LEFT SIDEBAR ========== -->
   <aside class="public-sidebar">
     <div class="sidebar-logo">
       <a href="{{ url_for('index') }}">
@@ -239,10 +240,14 @@
     </div>
   </aside>
 
-  <!-- ========== MAIN AREA ========== -->
   <div class="public-main">
     
     <div class="top-bar">
+      <div class="lang-switch">
+        <a href="?lang=hi" class="lang-btn active">हिंदी</a>
+        <a href="?lang=en" class="lang-btn">English</a>
+      </div>
+
       <form action="{{ url_for('search') }}" method="get" class="search-box">
         <input type="text" name="q" placeholder="यहाँ खोजें..." required>
         <button type="submit">🔍</button>
@@ -269,7 +274,6 @@
     </footer>
   </div>
 
-  <!-- WhatsApp Button -->
   <a href="https://wa.me/917317055531" 
      class="whatsapp-float" 
      target="_blank" 
