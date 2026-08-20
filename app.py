@@ -475,6 +475,68 @@ def admin_logout():
     return redirect(url_for("admin_login"))
 
 
+
+@app.route("/admin/change-password", methods=["GET", "POST"])
+@login_required
+def admin_change_password():
+    if request.method == "POST":
+        current = request.form.get("current_password", "")
+        new_username = request.form.get("new_username", "").strip()
+        new_password = request.form.get("new_password", "")
+        confirm = request.form.get("confirm_password", "")
+
+        conn = get_db()
+        user = conn.execute(
+            "SELECT * FROM users WHERE id = ?", (session["user_id"],)
+        ).fetchone()
+
+        if not user or not check_password_hash(user["password_hash"], current):
+            conn.close()
+            flash("वर्तमान पासवर्ड गलत है", "danger")
+            return render_template("admin/change_password.html")
+
+        if new_password and len(new_password) < 6:
+            conn.close()
+            flash("नया पासवर्ड कम से कम 6 अक्षर का होना चाहिए", "danger")
+            return render_template("admin/change_password.html")
+
+        if new_password and new_password != confirm:
+            conn.close()
+            flash("नया पासवर्ड और पुष्टि मेल नहीं खाते", "danger")
+            return render_template("admin/change_password.html")
+
+        if new_username and new_username != user["username"]:
+            exists = conn.execute(
+                "SELECT id FROM users WHERE username = ? AND id != ?",
+                (new_username, user["id"]),
+            ).fetchone()
+            if exists:
+                conn.close()
+                flash("यह यूजरनेम पहले से इस्तेमाल हो रहा है", "danger")
+                return render_template("admin/change_password.html")
+            conn.execute(
+                "UPDATE users SET username = ? WHERE id = ?",
+                (new_username, user["id"]),
+            )
+            session["username"] = new_username
+
+        if new_password:
+            conn.execute(
+                "UPDATE users SET password_hash = ? WHERE id = ?",
+                (generate_password_hash(new_password), user["id"]),
+            )
+
+        conn.commit()
+        conn.close()
+        flash("प्रोफ़ाइल अपडेट हो गई। नया यूजरनेम/पासवर्ड से लॉगिन करें।", "success")
+        if new_password or (new_username and new_username != user["username"]):
+            session.clear()
+            return redirect(url_for("admin_login"))
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("admin/change_password.html")
+
+
 # ==================== ADMIN DASHBOARD ====================
 
 @app.route("/admin")
