@@ -123,14 +123,20 @@
 <section class="section" style="background:#fff8f0;">
   <h2>📝 हाल की पोस्ट्स</h2>
   <div class="posts-grid">
-    {% for post in latest_posts %}
-    <a href="{{ url_for('post_detail', slug=post.slug) }}" class="post-card">
+    {% for post in posts %}
+    <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-card">
       <h3>{{ post.title }}</h3>
       <div class="meta">
-        {% if post.category %}{{ post.category.name }} • {% endif %}
+        {% if post.category_name %}{{ post.category_name }} • {% endif %}
         {{ post.created_at }}
       </div>
-      <div class="excerpt">{{ post.excerpt or post.content[:120] }}...</div>
+      <div class="excerpt">
+        {% if post.excerpt %}
+          {{ post.excerpt[:140] }}...
+        {% else %}
+          {{ post.content[:140] }}...
+        {% endif %}
+      </div>
     </a>
     {% else %}
     <p>अभी कोई पोस्ट नहीं है।</p>
