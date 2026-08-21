@@ -7,7 +7,7 @@
   .post-container {
     max-width: 860px;
     margin: 30px auto;
-    padding: 0 20px;
+    padding: 0 20px 40px;
   }
   .post-header {
     margin-bottom: 25px;
@@ -33,14 +33,16 @@
     border-radius: 12px;
   }
   .post-body {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     line-height: 1.85;
     color: #333;
-    white-space: pre-line;
+  }
+  .post-body p {
+    margin-bottom: 16px;
   }
   .back-link {
     display: inline-block;
-    margin-top: 30px;
+    margin-top: 35px;
     color: #c45c26;
     text-decoration: none;
     font-weight: 600;
@@ -64,7 +66,7 @@
   </div>
 
   <div class="post-body">
-    {{ post.content|striptags }}
+    {{ post.content|safe }}
   </div>
 
   <a href="{{ url_for('index') }}" class="back-link">← वापस होम पर जाएं</a>
