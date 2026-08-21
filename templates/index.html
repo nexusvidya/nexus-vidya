@@ -7,164 +7,108 @@
   .hero-banner {
     background: linear-gradient(135deg, #5c2e0f 0%, #8b4513 45%, #c45c26 100%);
     color: white;
-    padding: 35px 30px 45px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  .lang-switch {
-    display: flex;
-    gap: 8px;
-  }
-  .lang-btn {
-    padding: 7px 16px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.92rem;
-    background: rgba(255,255,255,0.18);
-    color: white;
-    font-weight: 600;
-    border: 1px solid rgba(255,255,255,0.3);
-    transition: all 0.2s;
-  }
-  .lang-btn:hover, .lang-btn.active {
-    background: white;
-    color: #5c2e0f;
-  }
-  .hero-search {
-    display: flex;
-    border-radius: 30px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    max-width: 360px;
-    width: 100%;
-  }
-  .hero-search input {
-    border: none;
-    padding: 12px 18px;
-    flex: 1;
-    font-size: 1rem;
-    outline: none;
-  }
-  .hero-search button {
-    border: none;
-    background: #2c1810;
-    color: white;
-    padding: 0 20px;
-    cursor: pointer;
-    font-size: 1.1rem;
-  }
-  .hero-content {
+    padding: 40px 30px 50px;
     text-align: center;
   }
-  .hero-content h1 {
+  .hero-banner h1 {
     font-size: 2.6rem;
-    font-weight: 700;
     margin-bottom: 8px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
-  .hero-content .tagline {
+  .hero-banner .tagline {
     font-size: 1.2rem;
     opacity: 0.95;
-    margin-bottom: 16px;
-  }
-  .hero-subjects {
-    font-size: 0.95rem;
-    opacity: 0.92;
-    line-height: 1.8;
-    max-width: 720px;
-    margin: 0 auto;
+    margin-bottom: 18px;
   }
   .hero-subjects span {
     display: inline-block;
-    margin: 3px 5px;
-    padding: 3px 11px;
-    background: rgba(255,255,255,0.13);
+    margin: 4px 6px;
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.15);
     border-radius: 12px;
+    font-size: 0.95rem;
   }
-
-  .main-topics {
+  .section {
     padding: 35px 25px;
   }
-  .main-topics h2 {
+  .section h2 {
     font-size: 1.5rem;
-    margin-bottom: 22px;
     color: #3d1c08;
+    margin-bottom: 22px;
   }
   .topics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
   }
   .topic-card {
     background: white;
-    border-radius: 14px;
-    padding: 22px 12px;
+    border-radius: 12px;
+    padding: 20px 12px;
     text-align: center;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-    transition: all 0.25s;
     text-decoration: none;
     color: #333;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
     border: 1px solid #f0e6d8;
+    transition: 0.25s;
   }
   .topic-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
     border-color: #c45c26;
   }
-  .topic-card .icon {
-    font-size: 2.1rem;
+  .topic-card .icon { font-size: 2rem; margin-bottom: 8px; }
+  .topic-card .name { font-weight: 600; font-size: 0.95rem; }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .post-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    border: 1px solid #f0e6d8;
+    text-decoration: none;
+    color: #333;
+    transition: 0.25s;
+  }
+  .post-card:hover {
+    transform: translateY(-4px);
+    border-color: #c45c26;
+  }
+  .post-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #3d1c08;
+  }
+  .post-card .meta {
+    font-size: 0.85rem;
+    color: #888;
     margin-bottom: 10px;
   }
-  .topic-card .name {
-    font-weight: 600;
+  .post-card .excerpt {
     font-size: 0.95rem;
-  }
-
-  @media (max-width: 768px) {
-    .hero-banner { padding: 25px 16px 35px; }
-    .hero-content h1 { font-size: 2rem; }
-    .hero-search { max-width: 100%; }
+    line-height: 1.5;
+    color: #555;
   }
 </style>
 
 <section class="hero-banner">
-  <div class="hero-top">
-    <div class="lang-switch">
-      <a href="?lang=hi" class="lang-btn {% if request.args.get('lang') != 'en' %}active{% endif %}">हिंदी</a>
-      <a href="?lang=en" class="lang-btn {% if request.args.get('lang') == 'en' %}active{% endif %}">English</a>
-    </div>
-    <form action="{{ url_for('search') }}" method="get" class="hero-search">
-      <input type="text" name="q" placeholder="खोजें... Search here" required>
-      <button type="submit">🔍</button>
-    </form>
-  </div>
-
-  <div class="hero-content">
-    <h1>Nexus Vidya</h1>
-    <div class="tagline">ज्ञान का केंद्र • Centre of Knowledge</div>
-    <div class="hero-subjects">
-      <span>ज्योतिष</span>
-      <span>वास्तु शास्त्र</span>
-      <span>वैदिक न्यूरोलॉजी</span>
-      <span>न्यूमेरोलॉजी</span>
-      <span>करंट अफेयर्स</span>
-      <span>Geography</span>
-      <span>Share Market</span>
-      <span>Research</span>
-      <span>और भी बहुत कुछ...</span>
-    </div>
+  <h1>Nexus Vidya</h1>
+  <div class="tagline">ज्ञान का केंद्र • Centre of Knowledge</div>
+  <div class="hero-subjects">
+    <span>ज्योतिष</span>
+    <span>वास्तु</span>
+    <span>वैदिक न्यूरोलॉजी</span>
+    <span>न्यूमेरोलॉजी</span>
+    <span>करंट अफेयर्स</span>
+    <span>Research</span>
   </div>
 </section>
 
-<section class="main-topics">
+<section class="section">
   <h2>📚 मुख्य विषय</h2>
   <div class="topics-grid">
     {% for cat in nav_categories %}
@@ -172,11 +116,24 @@
       <div class="icon">{{ cat.icon or '📖' }}</div>
       <div class="name">{{ cat.name }}</div>
     </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section" style="background:#fff8f0;">
+  <h2>📝 हाल की पोस्ट्स</h2>
+  <div class="posts-grid">
+    {% for post in latest_posts %}
+    <a href="{{ url_for('post_detail', slug=post.slug) }}" class="post-card">
+      <h3>{{ post.title }}</h3>
+      <div class="meta">
+        {% if post.category %}{{ post.category.name }} • {% endif %}
+        {{ post.created_at }}
+      </div>
+      <div class="excerpt">{{ post.excerpt or post.content[:120] }}...</div>
+    </a>
     {% else %}
-    <a href="#" class="topic-card"><div class="icon">🌍</div><div class="name">Geography</div></a>
-    <a href="#" class="topic-card"><div class="icon">🙏</div><div class="name">God Creature</div></a>
-    <a href="#" class="topic-card"><div class="icon">🔬</div><div class="name">Research</div></a>
-    <a href="#" class="topic-card"><div class="icon">📈</div><div class="name">Share Market</div></a>
+    <p>अभी कोई पोस्ट नहीं है।</p>
     {% endfor %}
   </div>
 </section>
