@@ -9,95 +9,38 @@
   {% block extra_head %}{% endblock %}
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Noto Sans Devanagari', sans-serif;
-      background: #f8f5f0;
-      color: #333;
-      display: flex;
-      min-height: 100vh;
-    }
-    .public-sidebar {
-      width: 260px;
-      background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      z-index: 100;
-      overflow-y: auto;
-    }
-    .sidebar-logo {
-      padding: 18px 15px 12px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-    .sidebar-logo img {
-      max-width: 150px;
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto 6px;
-      border-radius: 8px;
-    }
+    body { font-family: 'Noto Sans Devanagari', sans-serif; background: #f8f5f0; color: #333; display: flex; min-height: 100vh; }
+    .public-sidebar { width: 260px; background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%); color: #fff; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; }
+    .sidebar-logo { padding: 18px 15px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .sidebar-logo img { max-width: 150px; width: 100%; height: auto; display: block; margin: 0 auto 6px; border-radius: 8px; }
     .sidebar-logo a { text-decoration: none; display: block; }
     .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; }
     .sidebar-nav { padding: 12px 0; flex: 1; }
-    .sidebar-nav a {
-      display: flex; align-items: center; gap: 10px;
-      padding: 11px 20px; color: #f5e6d3;
-      text-decoration: none; font-size: 0.95rem;
-      transition: all 0.2s; border-left: 3px solid transparent;
-    }
-    .sidebar-nav a:hover {
-      background: rgba(255,255,255,0.1);
-      border-left-color: #ffb347; color: #fff;
-    }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #f5e6d3; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; border-left: 3px solid transparent; }
+    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
     .sidebar-nav .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
-    .sidebar-bottom {
-      padding: 15px 18px;
-      border-top: 1px solid rgba(255,255,255,0.15);
-    }
-    .sidebar-bottom a {
-      display: block; text-align: center;
-      background: #c45c26; color: white;
-      padding: 10px; border-radius: 8px;
-      text-decoration: none; font-weight: 600; font-size: 0.95rem;
-    }
+    .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); }
+    .sidebar-bottom a { display: block; text-align: center; background: #c45c26; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
     .sidebar-bottom a:hover { background: #a0481c; }
-    .public-main {
-      margin-left: 260px;
-      flex: 1; min-height: 100vh;
-      display: flex; flex-direction: column;
-    }
+    .public-main { margin-left: 260px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
     .content-area { flex: 1; }
-    .site-footer {
-      background: #2c1810; color: #f5e6d3;
-      text-align: center; padding: 22px 20px; font-size: 0.9rem;
-    }
+    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px 20px; font-size: 0.9rem; }
     .site-footer p { margin: 4px 0; }
-    .whatsapp-float {
-      position: fixed; bottom: 25px; right: 25px;
-      background: #25D366; color: white;
-      width: 56px; height: 56px; border-radius: 50%;
-      font-size: 26px; box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-      z-index: 999; display: flex; align-items: center; justify-content: center;
-      text-decoration: none; transition: transform 0.2s;
-    }
+    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: white; width: 56px; height: 56px; border-radius: 50%; font-size: 26px; box-shadow: 0 4px 14px rgba(0,0,0,0.3); z-index: 999; display: flex; align-items: center; justify-content: center; text-decoration: none; }
     .whatsapp-float:hover { transform: scale(1.1); color: white; }
+    .google-translate { position: fixed; top: 12px; right: 20px; z-index: 1000; background: white; padding: 4px 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
     @media (max-width: 768px) {
       .public-sidebar { width: 100%; height: auto; position: relative; }
       .public-main { margin-left: 0; }
       .sidebar-nav { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; }
-      .sidebar-nav a {
-        padding: 8px 12px; border-left: none;
-        border-radius: 6px; background: rgba(255,255,255,0.08); font-size: 0.88rem;
-      }
-      .sidebar-logo img { max-width: 110px; }
+      .sidebar-nav a { padding: 8px 12px; border-left: none; border-radius: 6px; background: rgba(255,255,255,0.08); font-size: 0.88rem; }
+      .google-translate { top: auto; bottom: 90px; right: 15px; }
     }
   </style>
 </head>
 <body>
+  <div class="google-translate"><div id="google_translate_element"></div></div>
+
   <aside class="public-sidebar">
     <div class="sidebar-logo">
       <a href="{{ url_for('index') }}">
@@ -137,7 +80,18 @@
     </footer>
   </div>
 
-  <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener" title="WhatsApp पर बात करें">💬</a>
+  <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener">💬</a>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'hi',
+        includedLanguages: 'hi,en,bn,sa,ta,te,mr,gu,pa,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>
