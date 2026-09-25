@@ -1,46 +1,25 @@
 {% extends "base.html" %}
 {% block title %}खोज{% endblock %}
-
 {% block content %}
-<section class="page-header">
-  <div class="container">
-    <h1>🔍 {{ t('search_results') }}</h1>
-    {% if query %}
-    <p class="page-desc">"{{ query }}" के लिए {{ posts|length }} परिणाम मिले</p>
-    {% endif %}
-  </div>
-</section>
-
-<section class="posts-section">
-  <div class="container">
-    {% if posts %}
-    <div class="post-grid">
-      {% for post in posts %}
-      <article class="post-card">
-        {% if post.featured_image %}
-        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb">
-          <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}" loading="lazy">
-        </a>
-        {% else %}
-        <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-thumb placeholder">
-          <span>{{ post.category_icon or '📄' }}</span>
-        </a>
-        {% endif %}
-        <div class="post-body">
-          {% if post.category_name %}
-          <span class="post-cat">{{ post.category_icon }} {{ post.category_name }}</span>
-          {% endif %}
-          <h3><a href="{{ url_for('post_page', slug=post.slug) }}">{{ post.title }}</a></h3>
-          <p class="post-excerpt">{{ post.excerpt or (post.content[:120] + '...') if post.content else '' }}</p>
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div class="empty-state">
-      <p>{% if query %}{{ t('no_results') }}{% else %}कृपया कुछ खोजें।{% endif %}</p>
-    </div>
-    {% endif %}
-  </div>
+<section style="max-width:860px;margin:0 auto;padding:28px 18px;">
+  <h1>🔍 खोज</h1>
+  <form action="{{ url_for('search') }}" method="get" style="display:flex;gap:8px;margin:16px 0 24px;">
+    <input type="search" name="q" value="{{ query or '' }}" placeholder="शब्द लिखें..." style="flex:1;padding:10px 12px;border-radius:8px;border:1px solid #ddd;">
+    <button type="submit" style="background:#5c2e0f;color:#fff;border:0;padding:10px 16px;border-radius:8px;">खोजें</button>
+  </form>
+  {% if query %}
+  <p style="color:#666;margin-bottom:16px;">"{{ query }}" — {{ posts|length }} परिणाम</p>
+  {% endif %}
+  {% if posts %}
+    {% for post in posts %}
+    <article style="background:#fff;border:1px solid #f0e6d8;border-radius:10px;padding:16px;margin-bottom:12px;">
+      {% if post.category_name %}<div style="color:#888;font-size:.85rem;">{{ post.category_name }}</div>{% endif %}
+      <h3 style="margin:4px 0;"><a href="{{ url_for('post_page', slug=post.slug) }}" style="color:#3d1c08;text-decoration:none;">{{ post.title }}</a></h3>
+      <p>{{ post.excerpt or (post.content[:140] ~ '...' if post.content else '') }}</p>
+    </article>
+    {% endfor %}
+  {% elif query %}
+    <p>कोई परिणाम नहीं मिला। दूसरा शब्द आज़माएँ।</p>
+  {% endif %}
 </section>
 {% endblock %}

@@ -1,58 +1,69 @@
 {% extends "base.html" %}
 {% block title %}{{ post.title }}{% endblock %}
+{% block meta_desc %}{{ (post.excerpt or post.title)[:160] }}{% endblock %}
+{% block og_title %}{{ post.title }} | Nexus Vidya{% endblock %}
+{% block og_desc %}{{ (post.excerpt or post.title)[:160] }}{% endblock %}
 
 {% block content %}
 <article class="single-post">
-  <div class="container narrow">
-    <div class="breadcrumb">
+  <div class="container narrow" style="max-width:820px;margin:0 auto;padding:24px 18px;">
+    <div class="breadcrumb" style="font-size:.9rem;color:#777;margin-bottom:12px;">
       <a href="{{ url_for('index') }}">होम</a>
       {% if post.category_slug %}
       → <a href="{{ url_for('category_page', slug=post.category_slug) }}">{{ post.category_name }}</a>
       {% endif %}
-      → <span>{{ post.title[:40] }}{% if post.title|length > 40 %}...{% endif %}</span>
     </div>
-
     <header class="post-header">
       {% if post.category_name %}
       <a href="{{ url_for('category_page', slug=post.category_slug) }}" class="post-cat">{{ post.category_icon }} {{ post.category_name }}</a>
       {% endif %}
-      <h1>{{ post.title }}</h1>
-      <div class="post-meta">
+      <h1 style="color:#3d1c08;margin:8px 0 10px;">{{ post.title }}</h1>
+      <div class="post-meta" style="color:#888;font-size:.9rem;">
         <span>✍️ {{ post.author_name or 'एडमिन' }}</span>
         <span>📅 {{ post.created_at[:16] if post.created_at else '' }}</span>
-        <span>👁️ {{ post.views or 0 }} {{ t('views') }}</span>
+        <span>👁️ {{ post.views or 0 }} बार पढ़ा गया</span>
       </div>
     </header>
-
     {% if post.featured_image %}
-    <div class="featured-image">
-      <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}">
+    <div class="featured-image" style="margin:16px 0;">
+      <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="{{ post.title }}" style="max-width:100%;border-radius:10px;">
     </div>
     {% endif %}
-
     <div class="post-content article-body">
       {{ post.content | format_content }}
     </div>
-
     {% if media %}
     <div class="media-gallery">
-      <h3>📷 {{ t('media_gallery') }}</h3>
+      <h3>📷 मीडिया</h3>
       <div class="gallery-grid">
         {% for m in media %}
         <div class="gallery-item">
           {% if m.media_type == 'video' %}
-          <video controls preload="metadata">
+          <video controls preload="metadata" style="max-width:100%">
             <source src="{{ url_for('static', filename='uploads/' + m.filename) }}" type="video/mp4">
           </video>
           {% else %}
           <a href="{{ url_for('static', filename='uploads/' + m.filename) }}" target="_blank">
-            <img src="{{ url_for('static', filename='uploads/' + m.filename) }}" alt="{{ m.original_name }}" loading="lazy">
+            <img src="{{ url_for('static', filename='uploads/' + m.filename) }}" alt="{{ m.original_name }}" loading="lazy" style="max-width:100%;border-radius:8px;">
           </a>
           {% endif %}
         </div>
         {% endfor %}
       </div>
     </div>
+    {% endif %}
+    <div class="wa-box">
+      <h3>इस विषय पर बात करें</h3>
+      <p>प्रश्न, कुंडली, वास्तु या नाम संबंधी सलाह के लिए WhatsApp करें।</p>
+      <a href="https://wa.me/917317055531?text=नमस्ते, लेख: {{ post.title }} — प्रश्न है।" target="_blank" rel="noopener">💬 WhatsApp 7317055531</a>
+    </div>
+    {% if related %}
+    <h3 style="margin-top:28px;">संबंधित लेख</h3>
+    <ul>
+      {% for r in related %}
+      <li style="margin:8px 0;"><a href="{{ url_for('post_page', slug=r.slug) }}">{{ r.title }}</a></li>
+      {% endfor %}
+    </ul>
     {% endif %}
   </div>
 </article>
