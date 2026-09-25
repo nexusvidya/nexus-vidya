@@ -2,68 +2,81 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{% block title %}Nexus Vidya{% endblock %} | ज्ञान का केंद्र</title>
-  <meta name="description" content="{% block meta_desc %}Nexus Vidya — ज्योतिष, वास्तु, वैदिक ज्ञान, न्यूमेरोलॉजी, करंट अफेयर्स और हर विषय का केंद्र।{% endblock %}">
-  <meta property="og:title" content="{% block og_title %}Nexus Vidya | ज्ञान का केंद्र{% endblock %}">
-  <meta property="og:description" content="{% block og_desc %}ज्ञान, ज्योतिष, वास्तु और अध्ययन का मंच।{% endblock %}">
-  <meta property="og:type" content="website">
+  <meta name="description" content="{% block meta_desc %}Nexus Vidya — ज्योतिष, वास्तु, वैदिक ज्ञान और हर विषय।{% endblock %}">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   {% block extra_head %}{% endblock %}
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; }
+    img, video { max-width: 100%; height: auto; }
     body { font-family: 'Noto Sans Devanagari', sans-serif; background: #f8f5f0; color: #333; display: flex; min-height: 100vh; }
-    .public-sidebar { width: 260px; background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%); color: #fff; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; }
+    .public-sidebar { width: 260px; background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%); color: #fff; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 300; overflow-y: auto; }
     .sidebar-logo { padding: 18px 15px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
-    .sidebar-logo img { max-width: 150px; width: 100%; border-radius: 8px; }
+    .sidebar-logo img { max-width: 140px; width: 100%; border-radius: 8px; }
     .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; margin-top: 4px; }
     .side-search { padding: 12px 14px; }
-    .side-search input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 0; font-size: 0.9rem; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 8px; padding: 10px 18px; color: #f5e6d3; text-decoration: none; font-size: 0.95rem; border-left: 3px solid transparent; }
-    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
-    .nav-children { display: block; }
-    .nav-children a { padding: 7px 16px 7px 36px; font-size: 0.86rem; color: #f0d9b8; }
+    .side-search input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 0; font-size: 16px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 8px; padding: 12px 18px; color: #f5e6d3; text-decoration: none; font-size: 1rem; min-height: 44px; }
+    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); }
+    .nav-children a { padding-left: 36px; font-size: 0.9rem; }
     .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); margin-top: auto; }
-    .sidebar-bottom a.contact-btn { display: block; text-align: center; background: #25D366; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-bottom: 8px; }
+    .sidebar-bottom a.contact-btn { display: block; text-align: center; background: #25D366; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-bottom: 8px; }
     .sidebar-bottom a.admin-quiet { display: block; text-align: center; color: #c9a882; font-size: 0.75rem; text-decoration: none; }
-    .public-main { margin-left: 260px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+    .public-main { margin-left: 260px; flex: 1; min-width: 0; min-height: 100vh; display: flex; flex-direction: column; }
     .mobile-bar { display: none; }
+    .nav-close { display: none; }
+    .nav-overlay { display: none; }
     .content-area { flex: 1; }
-    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px; font-size: 0.9rem; }
+    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px 16px 80px; font-size: 0.9rem; }
     .site-footer a { color: #ffb347; }
-    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: #fff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 26px; z-index: 999; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
-    .google-translate { position: fixed; top: 12px; right: 20px; z-index: 1000; background: #fff; padding: 4px 8px; border-radius: 8px; }
-    .menu-toggle { background: #5c2e0f; color: #fff; border: 0; padding: 10px 14px; font-size: 1.1rem; border-radius: 8px; }
-    .wa-box { background:#e8fff0; border:1px solid #b7ebc6; border-radius:12px; padding:18px; margin:28px 0; }
-    .wa-box a { display:inline-block; background:#25D366; color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600; }
+    .whatsapp-float { position: fixed; bottom: 18px; right: 16px; background: #25D366; color: #fff; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 24px; z-index: 400; }
+    .google-translate { position: fixed; top: 10px; right: 12px; z-index: 250; background: #fff; padding: 2px 6px; border-radius: 8px; max-width: 46vw; overflow: hidden; }
+    .menu-toggle { background: #c45c26; color: #fff; border: 0; padding: 10px 14px; font-size: 1rem; border-radius: 8px; min-height: 44px; }
+    .wa-box { background:#e8fff0; border:1px solid #b7ebc6; border-radius:12px; padding:16px; margin:24px 0; }
+    .wa-box a { display:inline-block; background:#25D366; color:#fff; padding:12px 16px; border-radius:8px; text-decoration:none; font-weight:600; }
+    .article-body { line-height: 1.75; font-size: 1.05rem; overflow-wrap: anywhere; }
+    .article-body h2, .article-body h3 { margin: 18px 0 8px; color: #3d1c08; }
+    .article-body p { margin-bottom: 12px; }
+    .hero-search { display: flex; gap: 8px; }
     @media (max-width: 768px) {
       body { display: block; }
-      .mobile-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #3d1c08; color: #fff; position: sticky; top: 0; z-index: 200; }
-      .public-sidebar { width: 86%; max-width: 320px; position: fixed; transform: translateX(-110%); transition: transform .25s; }
+      .mobile-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #3d1c08; color: #fff; position: sticky; top: 0; z-index: 260; }
+      .mobile-bar strong { font-size: 1rem; }
+      .nav-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 280; }
+      .nav-overlay.show { display: block; }
+      .public-sidebar { width: 82%; max-width: 300px; transform: translateX(-105%); transition: transform .22s ease; z-index: 300; }
       .public-sidebar.open { transform: translateX(0); }
+      .nav-close { display: block; background: transparent; border: 0; color: #fff; font-size: 1.4rem; float: right; padding: 8px; }
       .public-main { margin-left: 0; }
-      .google-translate { top: 58px; right: 10px; }
+      .google-translate { top: auto; bottom: 80px; right: 10px; }
+      .hero-search { flex-direction: column; }
+      .hero-search input, .hero-search button { width: 100%; font-size: 16px; min-height: 46px; }
+      .topics-grid, .posts-grid { grid-template-columns: 1fr !important; }
     }
   </style>
 </head>
 <body>
 {% set children_map = nav_children if nav_children is defined else {} %}
   <div class="google-translate"><div id="google_translate_element"></div></div>
+  <div class="nav-overlay" id="navOverlay"></div>
   <div class="mobile-bar">
-    <button type="button" class="menu-toggle" id="menuToggle">☰ विषय</button>
+    <button type="button" class="menu-toggle" id="menuToggle">☰ मेनू</button>
     <strong>Nexus Vidya</strong>
-    <a href="{{ url_for('contact_page') }}" style="color:#fff;text-decoration:none;">📞</a>
+    <a href="{{ url_for('contact_page') }}" style="color:#fff;text-decoration:none;font-size:1.2rem;">📞</a>
   </div>
   <aside class="public-sidebar" id="sideNav">
     <div class="sidebar-logo">
+      <button type="button" class="nav-close" id="menuClose">✕</button>
       <a href="{{ url_for('index') }}">
         <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}" onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'" alt="Nexus Vidya">
       </a>
       <div class="sidebar-tagline">ज्ञान का केंद्र</div>
     </div>
     <form class="side-search" action="{{ url_for('search') }}" method="get">
-      <input type="search" name="q" placeholder="खोजें — ज्योतिष, वास्तु..." value="{{ request.args.get('q','') }}">
+      <input type="search" name="q" placeholder="खोजें..." value="{{ request.args.get('q','') }}">
     </form>
     <nav class="sidebar-nav">
       <a href="{{ url_for('index') }}">🏠 होम</a>
@@ -72,7 +85,7 @@
       {% if children_map.get(cat.id) %}
       <div class="nav-children">
         {% for sub in children_map.get(cat.id) %}
-        <a href="{{ url_for('category_page', slug=sub.slug) }}">└ {{ sub.icon or '📄' }} {{ sub.name }}</a>
+        <a href="{{ url_for('category_page', slug=sub.slug) }}">└ {{ sub.name }}</a>
         {% endfor %}
       </div>
       {% endif %}
@@ -87,15 +100,23 @@
   <div class="public-main">
     <div class="content-area">{% block content %}{% endblock %}</div>
     <footer class="site-footer">
-      <p>&copy; 2026 Nexus Vidya · ज्ञान का केंद्र</p>
-      <p><a href="{{ url_for('contact_page') }}">परामर्श</a> · <a href="https://wa.me/917317055531" target="_blank" rel="noopener">WhatsApp 7317055531</a></p>
+      <p>&copy; 2026 Nexus Vidya</p>
+      <p><a href="{{ url_for('contact_page') }}">परामर्श</a> · <a href="https://wa.me/917317055531">7317055531</a></p>
     </footer>
   </div>
   <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener">💬</a>
   <script>
-    var btn = document.getElementById('menuToggle');
-    var nav = document.getElementById('sideNav');
-    if (btn && nav) { btn.addEventListener('click', function(){ nav.classList.toggle('open'); }); }
+    (function(){
+      var nav = document.getElementById('sideNav');
+      var overlay = document.getElementById('navOverlay');
+      function openNav(){ nav.classList.add('open'); overlay.classList.add('show'); document.body.style.overflow='hidden'; }
+      function closeNav(){ nav.classList.remove('open'); overlay.classList.remove('show'); document.body.style.overflow=''; }
+      var t = document.getElementById('menuToggle');
+      var c = document.getElementById('menuClose');
+      if (t) t.addEventListener('click', openNav);
+      if (c) c.addEventListener('click', closeNav);
+      if (overlay) overlay.addEventListener('click', closeNav);
+    })();
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({ pageLanguage: 'hi', includedLanguages: 'hi,en,bn,sa,ta,te,mr,gu,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
     }
