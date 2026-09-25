@@ -5,6 +5,7 @@ Name Numerology, Current Affairs and any subject you study
 """
 
 import os
+import re
 import html as html_module
 import sqlite3
 import uuid
@@ -168,32 +169,86 @@ def api_nav_categories():
 
 @app.template_filter("format_content")
 def format_content_filter(text):
-    """Show posts with proper paragraphs. Fix escaped HTML and plain text."""
+    """Turn pasted articles into headings, paragraphs and lists."""
     if not text:
         return ""
     text = str(text).strip()
-    # Restore tags if they were stored escaped as &lt;p&gt;
     if "&lt;" in text or "&gt;" in text:
         text = html_module.unescape(text)
     lower = text.lower()
-    has_html = any(
-        tag in lower
-        for tag in ("<p", "<br", "<h1", "<h2", "<h3", "<ul", "<ol", "<div", "<strong", "<b>", "<em", "<li")
-    )
-    if has_html:
+    if any(tag in lower for tag in ("<p", "<br", "<h1", "<h2", "<h3", "<ul", "<ol", "<div", "<li")):
         return Markup(text)
-    # Plain text path
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
-    blocks = [b.strip() for b in text.split("\n\n")]
-    blocks = [b for b in blocks if b]
-    if not blocks:
-        return Markup("<p>" + escape(text).replace("\n", "<br>\n") + "</p>")
-    parts = []
-    for block in blocks:
-        safe = escape(block).replace("\n", "<br>\n")
-        parts.append("<p>" + safe + "</p>")
-    return Markup("\n".join(parts))
 
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    section = re.compile(
+        r"(शोध\s*पत्र(?:\s*\(\s*Research\s*Paper\s*\))?|"
+        r"अमूर्त(?:\s*\(\s*Abstract\s*\))?|"
+        r"सारांश(?:\s*\(\s*Abstract\s*\))?|"
+        r"परिचय(?:\s*\(\s*Introduction\s*\))?|"
+        r"निष्कर्ष(?:\s*\(\s*Conclusion\s*\))?|"
+        r"समापन(?:\s*\(\s*Conclusion\s*\))?|"
+        r"संदर्भ|"
+        r"Abstract|Introduction|Conclusion|References|"
+        r"\d+\.\s+[^\n*]{3,80}?(?=\s|$))",
+        re.IGNORECASE,
+    )
+
+    if "\n\n" not in text:
+        text = section.sub(lambda m: "\n\n" + m.group(0).strip() + "\n", text)
+        text = re.sub(r"\s+\*\s+", "\n* ", text)
+
+    blocks = [b.strip() for b in re.split(r"\n\s*\n", text) if b.strip()]
+    parts = []
+    section_line = re.compile(
+        r"^(शोध\s*पत्र(?:\s*\(\s*Research\s*Paper\s*\))?|"
+        r"अमूर्त(?:\s*\(\s*Abstract\s*\))?|"
+        r"सारांश(?:\s*\(\s*Abstract\s*\))?|"
+        r"परिचय(?:\s*\(\s*Introduction\s*\))?|"
+        r"निष्कर्ष(?:\s*\(\s*Conclusion\s*\))?|"
+        r"समापन(?:\s*\(\s*Conclusion\s*\))?|"
+        r"संदर्भ|Abstract|Introduction|Conclusion|References)\s*:?\s*$",
+        re.IGNORECASE,
+    )
+    numbered_line = re.compile(r"^\d+\.\s+\S+")
+
+    for block in blocks:
+        lines = [ln.strip() for ln in block.split("\n") if ln.strip()]
+        if not lines:
+            continue
+        first, rest = lines[0], lines[1:]
+
+        if section_line.match(first):
+            parts.append("<h2>" + escape(first) + "</h2>")
+            if rest:
+                parts.append("<p>" + "<br>\n".join(escape(x) for x in rest) + "</p>")
+            continue
+
+        if numbered_line.match(first) and len(first) < 90:
+            parts.append("<h3>" + escape(first) + "</h3>")
+            if rest:
+                parts.append("<p>" + "<br>\n".join(escape(x) for x in rest) + "</p>")
+            continue
+
+        bullets = [ln for ln in lines if re.match(r"^[\*\-•]\s+", ln)]
+        if bullets and len(bullets) == len(lines):
+            items = "".join("<li>" + escape(re.sub(r"^[\*\-•]\s+", "", ln)) + "</li>" for ln in lines)
+            parts.append("<ul>" + items + "</ul>")
+            continue
+
+        joined = " ".join(lines)
+        if " * " in joined:
+            bits = re.split(r"\s*\*\s+", joined)
+            if bits[0].strip():
+                parts.append("<p>" + escape(bits[0].strip()) + "</p>")
+            items = "".join("<li>" + escape(b.strip()) + "</li>" for b in bits[1:] if b.strip())
+            if items:
+                parts.append("<ul>" + items + "</ul>")
+            continue
+
+        parts.append("<p>" + "<br>\n".join(escape(x) for x in lines) + "</p>")
+
+    return Markup("\n".join(parts))
 
 
 def get_db():
