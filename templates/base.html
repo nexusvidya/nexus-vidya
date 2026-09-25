@@ -13,46 +13,33 @@
     .public-sidebar { width: 260px; background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%); color: #fff; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; }
     .sidebar-logo { padding: 18px 15px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
     .sidebar-logo img { max-width: 150px; width: 100%; height: auto; display: block; margin: 0 auto 6px; border-radius: 8px; }
-    .sidebar-logo a { text-decoration: none; display: block; }
-    .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; }
-    .sidebar-nav { padding: 12px 0; flex: 1; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #f5e6d3; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; border-left: 3px solid transparent; }
-    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
-    .sidebar-nav .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
-    .nav-group { margin-bottom: 2px; }
-    .nav-parent { display: flex; align-items: stretch; }
-    .nav-parent > a.nav-main { flex: 1; }
-    .nav-toggle { background: transparent; border: none; color: #e8c9a0; width: 36px; cursor: pointer; font-size: 0.85rem; }
-    .nav-children { display: none; padding: 0 0 6px 12px; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #f5e6d3; text-decoration: none; font-size: 0.95rem; border-left: 3px solid transparent; }
+    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
+    .nav-icon { width: 24px; text-align: center; }
+    .nav-parent { display: flex; }
+    .nav-parent .nav-main { flex: 1; }
+    .nav-toggle { background: transparent; border: 0; color: #e8c9a0; width: 36px; cursor: pointer; }
+    .nav-children { display: none; }
     .nav-group.open .nav-children { display: block; }
-    .nav-children a { padding: 8px 16px 8px 28px; font-size: 0.88rem; color: #f0d9b8; }
+    .nav-children a { padding: 8px 16px 8px 32px; font-size: 0.88rem; }
     .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); }
-    .sidebar-bottom a { display: block; text-align: center; background: #c45c26; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
-    .sidebar-bottom a:hover { background: #a0481c; }
+    .sidebar-bottom a { display: block; text-align: center; background: #c45c26; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; }
     .public-main { margin-left: 260px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
     .content-area { flex: 1; }
-    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px 20px; font-size: 0.9rem; }
-    .site-footer p { margin: 4px 0; }
-    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: white; width: 56px; height: 56px; border-radius: 50%; font-size: 26px; box-shadow: 0 4px 14px rgba(0,0,0,0.3); z-index: 999; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-    .whatsapp-float:hover { transform: scale(1.1); color: white; }
-    .google-translate { position: fixed; top: 12px; right: 20px; z-index: 1000; background: white; padding: 4px 8px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-    @media (max-width: 768px) {
-      .public-sidebar { width: 100%; height: auto; position: relative; }
-      .public-main { margin-left: 0; }
-      .sidebar-nav { padding: 10px; }
-      .google-translate { top: auto; bottom: 90px; right: 15px; }
-    }
+    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px; }
+    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: #fff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 26px; z-index: 999; }
+    .google-translate { position: fixed; top: 12px; right: 20px; z-index: 1000; background: #fff; padding: 4px 8px; border-radius: 8px; }
+    .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; }
+    @media (max-width: 768px) { .public-sidebar { width: 100%; position: relative; } .public-main { margin-left: 0; } }
   </style>
 </head>
 <body>
+{% set children_map = nav_children if nav_children is defined else {} %}
   <div class="google-translate"><div id="google_translate_element"></div></div>
-
   <aside class="public-sidebar">
     <div class="sidebar-logo">
       <a href="{{ url_for('index') }}">
-        <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}"
-             onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'"
-             alt="Nexus Vidya">
+        <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}" onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'" alt="Nexus Vidya" style="max-width:150px;width:100%;border-radius:8px">
       </a>
       <div class="sidebar-tagline">ज्ञान का केंद्र</div>
     </div>
@@ -64,16 +51,14 @@
           <a class="nav-main" href="{{ url_for('category_page', slug=cat.slug) }}">
             <span class="nav-icon">{{ cat.icon or '📚' }}</span> {{ cat.name }}
           </a>
-          {% if nav_children.get(cat.id) %}
-          <button type="button" class="nav-toggle" aria-label="sub">▾</button>
+          {% if children_map.get(cat.id) %}
+          <button type="button" class="nav-toggle">▾</button>
           {% endif %}
         </div>
-        {% if nav_children.get(cat.id) %}
+        {% if children_map.get(cat.id) %}
         <div class="nav-children">
-          {% for sub in nav_children.get(cat.id) %}
-          <a href="{{ url_for('category_page', slug=sub.slug) }}">
-            <span class="nav-icon">{{ sub.icon or '📄' }}</span> {{ sub.name }}
-          </a>
+          {% for sub in children_map.get(cat.id) %}
+          <a href="{{ url_for('category_page', slug=sub.slug) }}">{{ sub.icon or '📄' }} {{ sub.name }}</a>
           {% endfor %}
         </div>
         {% endif %}
@@ -84,47 +69,22 @@
       <a href="{{ url_for('admin_login') }}">🔐 एडमिन लॉगिन</a>
     </div>
   </aside>
-
   <div class="public-main">
     <div class="content-area">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div style="padding:15px 20px 0;">
-            {% for category, message in messages %}
-              <div class="flash flash-{{ category }}">{{ message }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
       {% block content %}{% endblock %}
     </div>
-    <footer class="site-footer">
-      <p>ज्ञान, ज्योतिष, वास्तु, करंट अफेयर्स और हर विषय का खजाना।</p>
-      <p>&copy; 2026 Nexus Vidya — सभी अधिकार सुरक्षित</p>
-    </footer>
+    <footer class="site-footer"><p>&copy; 2026 Nexus Vidya</p></footer>
   </div>
-
-  <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener">💬</a>
-
+  <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank">💬</a>
   <script>
     document.querySelectorAll('.nav-toggle').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        btn.closest('.nav-group').classList.toggle('open');
-      });
+      btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); btn.closest('.nav-group').classList.toggle('open'); });
     });
-  </script>
-  <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'hi',
-        includedLanguages: 'hi,en,bn,sa,ta,te,mr,gu,pa,ur',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
+      new google.translate.TranslateElement({ pageLanguage: 'hi', includedLanguages: 'hi,en,bn,sa,ta,te,mr,gu,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>
