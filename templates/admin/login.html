@@ -3,39 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login | Nexus Vidya</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>एडमिन लॉगिन | Nexus Vidya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; font-family:'Noto Sans Devanagari',sans-serif; background:linear-gradient(160deg,#2c1408,#5c2e0f 50%,#c45c26); }
+    .card { width:100%; max-width:400px; background:#fff; border-radius:16px; padding:32px 28px; box-shadow:0 20px 50px rgba(0,0,0,.25); }
+    h1 { margin:0 0 4px; color:#3d1c08; text-align:center; }
+    .sub { text-align:center; color:#888; margin-bottom:22px; }
+    label { display:block; margin:12px 0 6px; font-weight:600; color:#3d1c08; }
+    input { width:100%; padding:12px; border:1px solid #e2d4c4; border-radius:8px; font-size:16px; box-sizing:border-box; }
+    button { width:100%; margin-top:18px; padding:12px; border:0; border-radius:8px; background:#5c2e0f; color:#fff; font-size:1rem; font-weight:700; cursor:pointer; }
+    .flash { background:#fde8e8; color:#8a1f1f; padding:10px; border-radius:8px; margin-bottom:12px; }
+    .back { display:block; text-align:center; margin-top:16px; color:#8b5a2b; text-decoration:none; }
+  </style>
 </head>
-<body class="login-page">
-  <div class="login-card">
-    <div class="login-header">
-      <span class="logo-icon">✦</span>
-      <h1>Nexus Vidya</h1>
-      <p>Admin Panel Login</p>
-    </div>
-
+<body>
+  <div class="card">
+    <h1>Nexus Vidya</h1>
+    <p class="sub">केवल एडमिन — केवल लॉगिन</p>
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash flash-{{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
+      {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+      {% endfor %}
     {% endwith %}
-
-    <form method="post" class="login-form">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required autofocus placeholder="admin">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required placeholder="••••••••">
-      </div>
-      <button type="submit" class="btn btn-primary btn-block">Login</button>
+    <form method="post">
+      <label>यूजरनेम</label>
+      <input type="text" name="username" required autofocus autocomplete="username">
+      <label>पासवर्ड</label>
+      <input type="password" name="password" required autocomplete="current-password">
+      <button type="submit">लॉगिन</button>
     </form>
-    <p class="login-hint">Default: <code>admin</code> / <code>admin123</code></p>
-    <a href="{{ url_for('index') }}" class="back-link">← Back to website</a>
+    <a class="back" href="{{ url_for('index') }}">← वेबसाइट</a>
   </div>
 </body>
 </html>

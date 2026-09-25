@@ -1,41 +1,40 @@
 {% extends "base.html" %}
 {% block title %}होम{% endblock %}
-{% block meta_desc %}Nexus Vidya — ज्योतिष, वास्तु शास्त्र, वैदिक ज्ञान, न्यूमेरोलॉजी, करंट अफेयर्स और शोध लेख।{% endblock %}
-
 {% block content %}
 <style>
-  .hero-banner { background: linear-gradient(135deg, #5c2e0f 0%, #8b4513 45%, #c45c26 100%); color: white; padding: 36px 24px 42px; text-align: center; }
-  .hero-banner h1 { font-size: 2.4rem; margin-bottom: 8px; }
-  .hero-banner .tagline { font-size: 1.15rem; opacity: 0.95; margin-bottom: 16px; }
-  .hero-search { max-width: 520px; margin: 16px auto 0; display: flex; gap: 8px; }
-  .hero-search input { flex: 1; padding: 12px 14px; border: 0; border-radius: 8px; font-size: 1rem; }
-  .hero-search button { background: #25D366; color: #fff; border: 0; padding: 12px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-  .hero-subjects span { display: inline-block; margin: 4px 6px; padding: 4px 12px; background: rgba(255,255,255,0.15); border-radius: 12px; font-size: 0.92rem; }
-  .section { padding: 32px 22px; }
-  .section h2 { font-size: 1.45rem; color: #3d1c08; margin-bottom: 18px; }
-  .topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
-  .topic-card { background: white; border-radius: 12px; padding: 20px 12px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 3px 10px rgba(0,0,0,0.06); border: 1px solid #f0e6d8; }
-  .topic-card:hover { transform: translateY(-3px); border-color: #c45c26; }
-  .topic-card .icon { font-size: 2rem; margin-bottom: 8px; }
-  .topic-card .name { font-weight: 600; }
-  .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-  .post-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); border: 1px solid #f0e6d8; text-decoration: none; color: #333; display: block; }
-  .post-card h3 { font-size: 1.08rem; margin-bottom: 8px; color: #3d1c08; }
-  .post-card .meta { font-size: 0.85rem; color: #888; margin-bottom: 10px; }
-  .consult-strip { background: #fff; border: 1px solid #f0e6d8; border-radius: 12px; padding: 22px; text-align: center; }
-  .consult-strip a { display: inline-block; margin: 6px; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; }
-  .btn-wa { background: #25D366; color: #fff; }
-  .btn-call { background: #5c2e0f; color: #fff; }
+  .hero-banner { background: linear-gradient(125deg,#2c1408 0%,#7a3a14 45%,#d4782e 100%); color:#fff; padding:48px 22px 52px; text-align:center; position:relative; overflow:hidden; }
+  .hero-banner:after { content:""; position:absolute; inset:0; background:radial-gradient(circle at 80% 20%,rgba(255,200,120,.25),transparent 40%); pointer-events:none; }
+  .hero-banner h1 { font-size:clamp(2rem,5vw,3rem); margin-bottom:8px; position:relative; }
+  .hero-banner .tagline { font-size:1.15rem; opacity:.95; position:relative; }
+  .hero-search { max-width:540px; margin:20px auto 0; display:flex; gap:8px; position:relative; }
+  .hero-search input { flex:1; padding:14px 16px; border:0; border-radius:10px; font-size:1rem; }
+  .hero-search button { background:#25D366; color:#fff; border:0; padding:14px 20px; border-radius:10px; font-weight:700; cursor:pointer; }
+  .hero-subjects { margin-top:18px; position:relative; }
+  .hero-subjects span { display:inline-block; margin:4px; padding:5px 14px; background:rgba(255,255,255,.16); border-radius:999px; }
+  .section { padding:36px 22px; }
+  .section h2 { color:#3d1c08; margin-bottom:18px; }
+  .topics-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; }
+  .topic-card { background:#fff; border-radius:14px; padding:22px 12px; text-align:center; text-decoration:none; color:#333; border:1px solid #efe3d4; box-shadow:0 6px 18px rgba(92,46,15,.06); }
+  .topic-card:hover { transform:translateY(-4px); border-color:#c45c26; }
+  .topic-card .icon { font-size:2rem; margin-bottom:8px; }
+  .posts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
+  .post-card { background:#fff; border-radius:14px; padding:20px; text-decoration:none; color:#333; border:1px solid #efe3d4; display:block; box-shadow:0 6px 18px rgba(92,46,15,.06); }
+  .post-card h3 { color:#3d1c08; margin-bottom:8px; }
+  .post-card .meta { font-size:.85rem; color:#888; margin-bottom:8px; }
+  .consult-strip { background:linear-gradient(90deg,#fff8f0,#fff); border:1px solid #efe3d4; border-radius:14px; padding:28px; text-align:center; }
+  .consult-strip a { display:inline-block; margin:6px; padding:12px 18px; border-radius:10px; text-decoration:none; font-weight:700; }
+  .btn-wa { background:#25D366; color:#fff; }
+  .btn-call { background:#5c2e0f; color:#fff; }
 </style>
 <section class="hero-banner">
   <h1>Nexus Vidya</h1>
   <div class="tagline">ज्ञान का केंद्र • Centre of Knowledge</div>
   <form class="hero-search" action="{{ url_for('search') }}" method="get">
-    <input type="search" name="q" placeholder="लेख खोजें — ज्योतिष, वास्तु, Geography..." required>
+    <input type="search" name="q" placeholder="ज्योतिष, वास्तु, भूगोल..." required>
     <button type="submit">खोजें</button>
   </form>
-  <div class="hero-subjects" style="margin-top:16px">
-    <span>ज्योतिष</span><span>वास्तु</span><span>वैदिक न्यूरोलॉजी</span><span>न्यूमेरोलॉजी</span><span>करंट अफेयर्स</span>
+  <div class="hero-subjects">
+    <span>ज्योतिष</span><span>वास्तु</span><span>न्यूमेरोलॉजी</span><span>करंट अफेयर्स</span>
   </div>
 </section>
 <section class="section">
@@ -56,19 +55,17 @@
     <a href="{{ url_for('post_page', slug=post.slug) }}" class="post-card">
       <h3>{{ post.title }}</h3>
       <div class="meta">{% if post.category_name %}{{ post.category_name }} • {% endif %}{{ post.created_at[:10] if post.created_at else '' }}</div>
-      <div class="excerpt">{% if post.excerpt %}{{ post.excerpt[:160] }}{% elif post.content %}{{ post.content[:160] }}{% endif %}</div>
+      <div>{% if post.excerpt %}{{ post.excerpt[:160] }}{% elif post.content %}{{ post.content[:160] }}{% endif %}</div>
     </a>
-    {% else %}
-    <p>अभी कोई लेख नहीं है।</p>
-    {% endfor %}
+    {% else %}<p>अभी कोई लेख नहीं।</p>{% endfor %}
   </div>
 </section>
 <section class="section">
   <div class="consult-strip">
     <h2>परामर्श चाहिए?</h2>
-    <p>ज्योतिष, वास्तु, नाम या किसी लेख पर प्रश्न — सीधे बात करें।</p>
+    <p>ज्योतिष, वास्तु या नाम — सीधे बात करें।</p>
     <a class="btn-wa" href="https://wa.me/917317055531" target="_blank" rel="noopener">WhatsApp 7317055531</a>
-    <a class="btn-call" href="{{ url_for('contact_page') }}">संपर्क पेज</a>
+    <a class="btn-call" href="{{ url_for('contact_page') }}">संपर्क</a>
   </div>
 </section>
 {% endblock %}
