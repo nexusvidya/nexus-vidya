@@ -12,15 +12,23 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label>कैटेगरी</label>
-        <select name="category_id">
+        <label>कैटेगरी / सब-कैटेगरी</label>
+        <select name="category_id" required>
           <option value="">— चुनें —</option>
           {% for c in categories %}
-          <option value="{{ c.id }}" {% if post and post.category_id == c.id %}selected{% endif %}>
-            {{ c.icon }} {{ c.name }}{% if c.parent_id %} (सब){% endif %}
-          </option>
+            {% if not c.parent_id or c.parent_id == 0 %}
+            <optgroup label="{{ c.icon or '📚' }} {{ c.name }}">
+              <option value="{{ c.id }}" {% if post and post.category_id == c.id %}selected{% endif %}>{{ c.name }} (मुख्य)</option>
+              {% for s in categories %}
+                {% if s.parent_id == c.id %}
+                <option value="{{ s.id }}" {% if post and post.category_id == s.id %}selected{% endif %}>↳ {{ s.icon or '📄' }} {{ s.name }}</option>
+                {% endif %}
+              {% endfor %}
+            </optgroup>
+            {% endif %}
           {% endfor %}
         </select>
+        <small>लेख जिस सब-कैटेगरी में दिखाना है वही चुनें, जैसे Geography → Climate</small>
       </div>
       <div class="form-group">
         <label>स्टेटस</label>
@@ -38,29 +46,9 @@
 
     <div class="form-group">
       <label>मुख्य सामग्री / लेख</label>
-      <textarea name="content" id="content" rows="18" placeholder="यहाँ अपना लेख लिखें...
-
-उदाहरण:
-परिचय
-
-यह लेख ज्योतिष के बारे में है।
-
-मुख्य बिंदु
-
-पहला बिंदु यहाँ लिखें।
-दूसरा बिंदु यहाँ लिखें।
-
-निष्कर्ष
-
-लेख का सार यहाँ।">{{ post.content if post else '' }}</textarea>
+      <textarea name="content" id="content" rows="18">{{ post.content if post else '' }}</textarea>
       <div class="format-help">
-        <strong>फॉर्मेट कैसे रखें:</strong>
-        <ul>
-          <li>हर नए पैराग्राफ के बीच <b>एक खाली लाइन</b> छोड़ें</li>
-          <li>शीर्षक / परिचय / मुख्य बिंदु अलग-अलग पैराग्राफ में लिखें</li>
-          <li>क्रम अपने आप सही रहेगा — सब एक साथ नहीं जुड़ेगा</li>
-          <li>चाहें तो HTML भी लिख सकते हैं: &lt;h2&gt;शीर्षक&lt;/h2&gt;, &lt;b&gt;मोटा&lt;/b&gt;, &lt;br&gt;</li>
-        </ul>
+        <strong>फॉर्मेट:</strong> <code># शीर्षक</code> · <code>## उपशीर्षक</code> · <code>**मोटा**</code> · पैराग्राफ के बीच खाली लाइन
       </div>
     </div>
 
@@ -69,16 +57,14 @@
       {% if post and post.featured_image %}
       <div class="current-media">
         <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" alt="featured" style="max-height:120px;border-radius:8px">
-        <small>वर्तमान इमेज</small>
       </div>
       {% endif %}
       <input type="file" name="featured_image" accept="image/*">
     </div>
 
     <div class="form-group">
-      <label>अतिरिक्त फोटो / वीडियो अपलोड करें</label>
+      <label>अतिरिक्त फोटो / वीडियो</label>
       <input type="file" name="media_files" accept="image/*,video/*" multiple>
-      <small class="text-muted">एक साथ कई फाइलें चुन सकते हैं (JPG, PNG, WEBP, MP4, WEBM आदि)</small>
     </div>
 
     {% if media %}
