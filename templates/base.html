@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Nexus Vidya{% endblock %} | ज्ञान का केंद्र</title>
+  <meta name="description" content="{% block meta_desc %}Nexus Vidya — ज्योतिष, वास्तु, वैदिक ज्ञान, न्यूमेरोलॉजी, करंट अफेयर्स और हर विषय का केंद्र।{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}Nexus Vidya | ज्ञान का केंद्र{% endblock %}">
+  <meta property="og:description" content="{% block og_desc %}ज्ञान, ज्योतिष, वास्तु और अध्ययन का मंच।{% endblock %}">
+  <meta property="og:type" content="website">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   {% block extra_head %}{% endblock %}
@@ -14,30 +18,53 @@
     .sidebar-logo { padding: 18px 15px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
     .sidebar-logo img { max-width: 150px; width: 100%; border-radius: 8px; }
     .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; margin-top: 4px; }
+    .side-search { padding: 12px 14px; }
+    .side-search input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 0; font-size: 0.9rem; }
     .sidebar-nav a { display: flex; align-items: center; gap: 8px; padding: 10px 18px; color: #f5e6d3; text-decoration: none; font-size: 0.95rem; border-left: 3px solid transparent; }
     .sidebar-nav a:hover { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
     .nav-children { display: block; }
     .nav-children a { padding: 7px 16px 7px 36px; font-size: 0.86rem; color: #f0d9b8; }
     .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); margin-top: auto; }
-    .sidebar-bottom a { display: block; text-align: center; background: #c45c26; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    .sidebar-bottom a.contact-btn { display: block; text-align: center; background: #25D366; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-bottom: 8px; }
+    .sidebar-bottom a.admin-quiet { display: block; text-align: center; color: #c9a882; font-size: 0.75rem; text-decoration: none; }
     .public-main { margin-left: 260px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+    .mobile-bar { display: none; }
     .content-area { flex: 1; }
-    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px; }
-    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: #fff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 26px; z-index: 999; }
+    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px; font-size: 0.9rem; }
+    .site-footer a { color: #ffb347; }
+    .whatsapp-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; color: #fff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 26px; z-index: 999; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
     .google-translate { position: fixed; top: 12px; right: 20px; z-index: 1000; background: #fff; padding: 4px 8px; border-radius: 8px; }
-    @media (max-width: 768px) { .public-sidebar { width: 100%; position: relative; } .public-main { margin-left: 0; } }
+    .menu-toggle { background: #5c2e0f; color: #fff; border: 0; padding: 10px 14px; font-size: 1.1rem; border-radius: 8px; }
+    .wa-box { background:#e8fff0; border:1px solid #b7ebc6; border-radius:12px; padding:18px; margin:28px 0; }
+    .wa-box a { display:inline-block; background:#25D366; color:#fff; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600; }
+    @media (max-width: 768px) {
+      body { display: block; }
+      .mobile-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #3d1c08; color: #fff; position: sticky; top: 0; z-index: 200; }
+      .public-sidebar { width: 86%; max-width: 320px; position: fixed; transform: translateX(-110%); transition: transform .25s; }
+      .public-sidebar.open { transform: translateX(0); }
+      .public-main { margin-left: 0; }
+      .google-translate { top: 58px; right: 10px; }
+    }
   </style>
 </head>
 <body>
 {% set children_map = nav_children if nav_children is defined else {} %}
   <div class="google-translate"><div id="google_translate_element"></div></div>
-  <aside class="public-sidebar">
+  <div class="mobile-bar">
+    <button type="button" class="menu-toggle" id="menuToggle">☰ विषय</button>
+    <strong>Nexus Vidya</strong>
+    <a href="{{ url_for('contact_page') }}" style="color:#fff;text-decoration:none;">📞</a>
+  </div>
+  <aside class="public-sidebar" id="sideNav">
     <div class="sidebar-logo">
       <a href="{{ url_for('index') }}">
         <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}" onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'" alt="Nexus Vidya">
       </a>
       <div class="sidebar-tagline">ज्ञान का केंद्र</div>
     </div>
+    <form class="side-search" action="{{ url_for('search') }}" method="get">
+      <input type="search" name="q" placeholder="खोजें — ज्योतिष, वास्तु..." value="{{ request.args.get('q','') }}">
+    </form>
     <nav class="sidebar-nav">
       <a href="{{ url_for('index') }}">🏠 होम</a>
       {% for cat in nav_categories %}
@@ -50,17 +77,25 @@
       </div>
       {% endif %}
       {% endfor %}
+      <a href="{{ url_for('contact_page') }}">📞 संपर्क / परामर्श</a>
     </nav>
     <div class="sidebar-bottom">
-      <a href="{{ url_for('admin_login') }}">🔐 एडमिन लॉगिन</a>
+      <a class="contact-btn" href="https://wa.me/917317055531" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a class="admin-quiet" href="{{ url_for('admin_login') }}">एडमिन</a>
     </div>
   </aside>
   <div class="public-main">
     <div class="content-area">{% block content %}{% endblock %}</div>
-    <footer class="site-footer"><p>&copy; 2026 Nexus Vidya</p></footer>
+    <footer class="site-footer">
+      <p>&copy; 2026 Nexus Vidya · ज्ञान का केंद्र</p>
+      <p><a href="{{ url_for('contact_page') }}">परामर्श</a> · <a href="https://wa.me/917317055531" target="_blank" rel="noopener">WhatsApp 7317055531</a></p>
+    </footer>
   </div>
-  <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank">💬</a>
+  <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener">💬</a>
   <script>
+    var btn = document.getElementById('menuToggle');
+    var nav = document.getElementById('sideNav');
+    if (btn && nav) { btn.addEventListener('click', function(){ nav.classList.toggle('open'); }); }
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({ pageLanguage: 'hi', includedLanguages: 'hi,en,bn,sa,ta,te,mr,gu,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
     }
