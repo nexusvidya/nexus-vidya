@@ -17,8 +17,15 @@
     .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; }
     .sidebar-nav { padding: 12px 0; flex: 1; }
     .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #f5e6d3; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; border-left: 3px solid transparent; }
-    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,0.1); border-left-color: #ffb347; color: #fff; }
     .sidebar-nav .nav-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+    .nav-group { margin-bottom: 2px; }
+    .nav-parent { display: flex; align-items: stretch; }
+    .nav-parent > a.nav-main { flex: 1; }
+    .nav-toggle { background: transparent; border: none; color: #e8c9a0; width: 36px; cursor: pointer; font-size: 0.85rem; }
+    .nav-children { display: none; padding: 0 0 6px 12px; }
+    .nav-group.open .nav-children { display: block; }
+    .nav-children a { padding: 8px 16px 8px 28px; font-size: 0.88rem; color: #f0d9b8; }
     .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); }
     .sidebar-bottom a { display: block; text-align: center; background: #c45c26; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; }
     .sidebar-bottom a:hover { background: #a0481c; }
@@ -32,8 +39,7 @@
     @media (max-width: 768px) {
       .public-sidebar { width: 100%; height: auto; position: relative; }
       .public-main { margin-left: 0; }
-      .sidebar-nav { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; }
-      .sidebar-nav a { padding: 8px 12px; border-left: none; border-radius: 6px; background: rgba(255,255,255,0.08); font-size: 0.88rem; }
+      .sidebar-nav { padding: 10px; }
       .google-translate { top: auto; bottom: 90px; right: 15px; }
     }
   </style>
@@ -44,16 +50,34 @@
   <aside class="public-sidebar">
     <div class="sidebar-logo">
       <a href="{{ url_for('index') }}">
-        <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}" alt="Nexus Vidya">
+        <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}"
+             onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'"
+             alt="Nexus Vidya">
       </a>
       <div class="sidebar-tagline">ज्ञान का केंद्र</div>
     </div>
     <nav class="sidebar-nav">
       <a href="{{ url_for('index') }}"><span class="nav-icon">🏠</span> होम</a>
       {% for cat in nav_categories %}
-      <a href="{{ url_for('category_page', slug=cat.slug) }}">
-        <span class="nav-icon">{{ cat.icon or '📚' }}</span> {{ cat.name }}
-      </a>
+      <div class="nav-group {% if request.path.startswith('/category/' ~ cat.slug) %}open{% endif %}">
+        <div class="nav-parent">
+          <a class="nav-main" href="{{ url_for('category_page', slug=cat.slug) }}">
+            <span class="nav-icon">{{ cat.icon or '📚' }}</span> {{ cat.name }}
+          </a>
+          {% if nav_children.get(cat.id) %}
+          <button type="button" class="nav-toggle" aria-label="sub">▾</button>
+          {% endif %}
+        </div>
+        {% if nav_children.get(cat.id) %}
+        <div class="nav-children">
+          {% for sub in nav_children.get(cat.id) %}
+          <a href="{{ url_for('category_page', slug=sub.slug) }}">
+            <span class="nav-icon">{{ sub.icon or '📄' }}</span> {{ sub.name }}
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
       {% endfor %}
     </nav>
     <div class="sidebar-bottom">
@@ -82,6 +106,15 @@
 
   <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener">💬</a>
 
+  <script>
+    document.querySelectorAll('.nav-toggle').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        btn.closest('.nav-group').classList.toggle('open');
+      });
+    });
+  </script>
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
