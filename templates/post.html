@@ -43,7 +43,6 @@
           {% if m.media_type == 'video' %}
           <video controls preload="metadata">
             <source src="{{ url_for('static', filename='uploads/' + m.filename) }}" type="video/mp4">
-            आपका ब्राउज़र वीडियो सपोर्ट नहीं करता।
           </video>
           {% else %}
           <a href="{{ url_for('static', filename='uploads/' + m.filename) }}" target="_blank">
@@ -57,28 +56,4 @@
     {% endif %}
   </div>
 </article>
-
-{% if related %}
-<section class="related-section">
-  <div class="container">
-    <h2 class="section-title">{{ t('related') }}</h2>
-    <div class="post-grid">
-      {% for r in related %}
-      <article class="post-card">
-        {% if r.featured_image %}
-        <a href="{{ url_for('post_page', slug=r.slug) }}" class="post-thumb">
-          <img src="{{ url_for('static', filename='uploads/' + r.featured_image) }}" alt="{{ r.title }}" loading="lazy">
-        </a>
-        {% else %}
-        <a href="{{ url_for('post_page', slug=r.slug) }}" class="post-thumb placeholder"><span>📄</span></a>
-        {% endif %}
-        <div class="post-body">
-          <h3><a href="{{ url_for('post_page', slug=r.slug) }}">{{ r.title }}</a></h3>
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
 {% endblock %}
