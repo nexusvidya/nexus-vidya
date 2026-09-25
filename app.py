@@ -167,86 +167,67 @@ def api_nav_categories():
             return jsonify([])
 
 
+def _md_inline(s):
+    """Bold/italic after HTML-escaping."""
+    s = escape(s)
+    s = s.replace("\\circ", "°").replace("^\\circ", "°")
+    s = re.sub(r"\\\((.+?)\\\)", r"\1", s)
+    s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", r"<em>\1</em>", s)
+    return s
+
+
 @app.template_filter("format_content")
 def format_content_filter(text):
-    """Turn pasted articles into headings, paragraphs and lists."""
+    """Markdown-lite: # headings, **bold**, lists, paragraphs. Keep line breaks."""
     if not text:
         return ""
     text = str(text).strip()
     if "&lt;" in text or "&gt;" in text:
         text = html_module.unescape(text)
     lower = text.lower()
-    if any(tag in lower for tag in ("<p", "<br", "<h1", "<h2", "<h3", "<ul", "<ol", "<div", "<li")):
+    if any(tag in lower for tag in ("<p>", "<p ", "<br", "<h1", "<h2", "<h3", "<ul", "<ol")):
         return Markup(text)
 
     text = text.replace("\r\n", "\n").replace("\r", "\n")
+    # If someone pasted # / ## without line breaks, force them onto new lines
+    text = re.sub(r"\s+(?=#{1,3}\s)", "\n\n", text)
+    text = re.sub(r"\s+(?=---\s*)", "\n\n", text)
 
-    section = re.compile(
-        r"(शोध\s*पत्र(?:\s*\(\s*Research\s*Paper\s*\))?|"
-        r"अमूर्त(?:\s*\(\s*Abstract\s*\))?|"
-        r"सारांश(?:\s*\(\s*Abstract\s*\))?|"
-        r"परिचय(?:\s*\(\s*Introduction\s*\))?|"
-        r"निष्कर्ष(?:\s*\(\s*Conclusion\s*\))?|"
-        r"समापन(?:\s*\(\s*Conclusion\s*\))?|"
-        r"संदर्भ|"
-        r"Abstract|Introduction|Conclusion|References|"
-        r"\d+\.\s+[^\n*]{3,80}?(?=\s|$))",
-        re.IGNORECASE,
-    )
-
-    if "\n\n" not in text:
-        text = section.sub(lambda m: "\n\n" + m.group(0).strip() + "\n", text)
-        text = re.sub(r"\s+\*\s+", "\n* ", text)
-
-    blocks = [b.strip() for b in re.split(r"\n\s*\n", text) if b.strip()]
+    blocks = re.split(r"\n\s*\n", text)
     parts = []
-    section_line = re.compile(
-        r"^(शोध\s*पत्र(?:\s*\(\s*Research\s*Paper\s*\))?|"
-        r"अमूर्त(?:\s*\(\s*Abstract\s*\))?|"
-        r"सारांश(?:\s*\(\s*Abstract\s*\))?|"
-        r"परिचय(?:\s*\(\s*Introduction\s*\))?|"
-        r"निष्कर्ष(?:\s*\(\s*Conclusion\s*\))?|"
-        r"समापन(?:\s*\(\s*Conclusion\s*\))?|"
-        r"संदर्भ|Abstract|Introduction|Conclusion|References)\s*:?\s*$",
-        re.IGNORECASE,
-    )
-    numbered_line = re.compile(r"^\d+\.\s+\S+")
-
     for block in blocks:
-        lines = [ln.strip() for ln in block.split("\n") if ln.strip()]
+        raw_lines = block.split("\n")
+        lines = [ln.strip() for ln in raw_lines]
+        # keep internal blank? already split
+        lines = [ln for ln in lines if ln != ""]
         if not lines:
             continue
-        first, rest = lines[0], lines[1:]
 
-        if section_line.match(first):
-            parts.append("<h2>" + escape(first) + "</h2>")
+        first = lines[0]
+
+        if first.strip("-") == "" or first == "---":
+            parts.append("<hr>")
+            continue
+
+        m = re.match(r"^(#{1,3})\s+(.+)$", first)
+        if m:
+            level = min(len(m.group(1)) + 1, 4)  # # -> h2, ## -> h3
+            title = m.group(2)
+            parts.append(f"<h{level}>" + _md_inline(title) + f"</h{level}>")
+            rest = lines[1:]
             if rest:
-                parts.append("<p>" + "<br>\n".join(escape(x) for x in rest) + "</p>")
+                parts.append("<p>" + "<br>\n".join(_md_inline(x) for x in rest) + "</p>")
             continue
 
-        if numbered_line.match(first) and len(first) < 90:
-            parts.append("<h3>" + escape(first) + "</h3>")
-            if rest:
-                parts.append("<p>" + "<br>\n".join(escape(x) for x in rest) + "</p>")
+        if re.match(r"^[\-•]\s+", first) or (first.startswith("* ") and not first.startswith("**")):
+            items = []
+            for ln in lines:
+                items.append("<li>" + _md_inline(re.sub(r"^[\*\-•]\s+", "", ln)) + "</li>")
+            parts.append("<ul>" + "".join(items) + "</ul>")
             continue
 
-        bullets = [ln for ln in lines if re.match(r"^[\*\-•]\s+", ln)]
-        if bullets and len(bullets) == len(lines):
-            items = "".join("<li>" + escape(re.sub(r"^[\*\-•]\s+", "", ln)) + "</li>" for ln in lines)
-            parts.append("<ul>" + items + "</ul>")
-            continue
-
-        joined = " ".join(lines)
-        if " * " in joined:
-            bits = re.split(r"\s*\*\s+", joined)
-            if bits[0].strip():
-                parts.append("<p>" + escape(bits[0].strip()) + "</p>")
-            items = "".join("<li>" + escape(b.strip()) + "</li>" for b in bits[1:] if b.strip())
-            if items:
-                parts.append("<ul>" + items + "</ul>")
-            continue
-
-        parts.append("<p>" + "<br>\n".join(escape(x) for x in lines) + "</p>")
+        parts.append("<p>" + "<br>\n".join(_md_inline(x) for x in lines) + "</p>")
 
     return Markup("\n".join(parts))
 
