@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>{% block title %}Nexus Vidya{% endblock %} | ज्ञान का केंद्र</title>
-  <meta name="description" content="{% block meta_desc %}Nexus Vidya — ज्योतिष, वास्तु, वैदिक ज्ञान और हर विषय।{% endblock %}">
+  <meta name="description" content="{% block meta_desc %}Nexus Vidya — ज्योतिष, वास्तु और ज्ञान।{% endblock %}">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   {% block extra_head %}{% endblock %}
@@ -12,49 +12,52 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { overflow-x: hidden; }
     img, video { max-width: 100%; height: auto; }
-    body { font-family: 'Noto Sans Devanagari', sans-serif; background: #f8f5f0; color: #333; display: flex; min-height: 100vh; }
-    .public-sidebar { width: 260px; background: linear-gradient(180deg, #5c2e0f 0%, #3d1c08 100%); color: #fff; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 300; overflow-y: auto; }
-    .sidebar-logo { padding: 18px 15px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
-    .sidebar-logo img { max-width: 140px; width: 100%; border-radius: 8px; }
-    .sidebar-tagline { font-size: 0.8rem; color: #e8c9a0; margin-top: 4px; }
-    .side-search { padding: 12px 14px; }
-    .side-search input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 0; font-size: 16px; }
-    .sidebar-nav a { display: flex; align-items: center; gap: 8px; padding: 12px 18px; color: #f5e6d3; text-decoration: none; font-size: 1rem; min-height: 44px; }
-    .sidebar-nav a:hover { background: rgba(255,255,255,0.1); }
-    .nav-children a { padding-left: 36px; font-size: 0.9rem; }
-    .sidebar-bottom { padding: 15px 18px; border-top: 1px solid rgba(255,255,255,0.15); margin-top: auto; }
-    .sidebar-bottom a.contact-btn { display: block; text-align: center; background: #25D366; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-bottom: 8px; }
-    .sidebar-bottom a.admin-quiet { display: block; text-align: center; color: #c9a882; font-size: 0.75rem; text-decoration: none; }
-    .public-main { margin-left: 260px; flex: 1; min-width: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    body { font-family: 'Noto Sans Devanagari', sans-serif; background: #f4f1ea; color: #333; min-height: 100vh; }
+    .topbar { background: #3d1c08; color: #fff; }
+    .topbar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 16px; padding: 8px 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; flex-shrink: 0; }
+    .brand img { height: 48px; width: auto; border-radius: 6px; }
+    .brand span { font-weight: 700; }
+    .top-search { margin-left: auto; display: flex; }
+    .top-search input { padding: 8px 10px; border: 0; border-radius: 6px 0 0 6px; font-size: 15px; width: 200px; }
+    .top-search button { background: #c45c26; color: #fff; border: 0; padding: 8px 12px; border-radius: 0 6px 6px 0; cursor: pointer; }
+    .menubar { background: #5c2e0f; }
+    .menubar-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: stretch; }
+    .menu-item { position: relative; }
+    .menu-item > a { display: block; color: #f5e6d3; text-decoration: none; padding: 12px 14px; font-size: 0.95rem; white-space: nowrap; }
+    .menu-item > a:hover, .menu-item.open > a { background: #fff; color: #3d1c08; }
+    .dropdown { display: none; position: absolute; left: 0; top: 100%; min-width: 240px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.18); z-index: 50; padding: 6px 0; }
+    .menu-item:hover > .dropdown, .menu-item.open > .dropdown { display: block; }
+    .dropdown a { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; color: #333; text-decoration: none; font-size: 0.92rem; }
+    .dropdown a:hover { background: #f3efe8; color: #8b2e0f; }
+    .has-sub { position: relative; }
+    .flyout { display: none; position: absolute; left: 100%; top: 0; min-width: 220px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+    .has-sub:hover > .flyout { display: block; }
     .mobile-bar { display: none; }
-    .nav-close { display: none; }
     .nav-overlay { display: none; }
-    .content-area { flex: 1; }
-    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px 16px 80px; font-size: 0.9rem; }
+    .content-wrap { max-width: 1100px; margin: 0 auto; padding: 0; min-height: 60vh; }
+    .site-footer { background: #2c1810; color: #f5e6d3; text-align: center; padding: 22px 16px 80px; }
     .site-footer a { color: #ffb347; }
     .whatsapp-float { position: fixed; bottom: 18px; right: 16px; background: #25D366; color: #fff; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 24px; z-index: 400; }
-    .google-translate { position: fixed; top: 10px; right: 12px; z-index: 250; background: #fff; padding: 2px 6px; border-radius: 8px; max-width: 46vw; overflow: hidden; }
-    .menu-toggle { background: #c45c26; color: #fff; border: 0; padding: 10px 14px; font-size: 1rem; border-radius: 8px; min-height: 44px; }
+    .google-translate { position: fixed; bottom: 80px; right: 12px; z-index: 250; background: #fff; padding: 2px 6px; border-radius: 8px; }
     .wa-box { background:#e8fff0; border:1px solid #b7ebc6; border-radius:12px; padding:16px; margin:24px 0; }
     .wa-box a { display:inline-block; background:#25D366; color:#fff; padding:12px 16px; border-radius:8px; text-decoration:none; font-weight:600; }
-    .article-body { line-height: 1.75; font-size: 1.05rem; overflow-wrap: anywhere; }
+    .article-body { line-height: 1.75; font-size: 1.05rem; overflow-wrap: anywhere; padding: 8px 0; }
     .article-body h2, .article-body h3 { margin: 18px 0 8px; color: #3d1c08; }
     .article-body p { margin-bottom: 12px; }
-    .hero-search { display: flex; gap: 8px; }
-    @media (max-width: 768px) {
-      body { display: block; }
-      .mobile-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #3d1c08; color: #fff; position: sticky; top: 0; z-index: 260; }
-      .mobile-bar strong { font-size: 1rem; }
+    .drawer { display: none; }
+    @media (max-width: 900px) {
+      .menubar, .top-search { display: none; }
+      .mobile-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #3d1c08; color: #fff; position: sticky; top: 0; z-index: 260; }
+      .menu-toggle { background: #c45c26; color: #fff; border: 0; padding: 10px 14px; border-radius: 8px; }
       .nav-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 280; }
       .nav-overlay.show { display: block; }
-      .public-sidebar { width: 82%; max-width: 300px; transform: translateX(-105%); transition: transform .22s ease; z-index: 300; }
-      .public-sidebar.open { transform: translateX(0); }
-      .nav-close { display: block; background: transparent; border: 0; color: #fff; font-size: 1.4rem; float: right; padding: 8px; }
-      .public-main { margin-left: 0; }
-      .google-translate { top: auto; bottom: 80px; right: 10px; }
-      .hero-search { flex-direction: column; }
-      .hero-search input, .hero-search button { width: 100%; font-size: 16px; min-height: 46px; }
-      .topics-grid, .posts-grid { grid-template-columns: 1fr !important; }
+      .drawer { display: block; position: fixed; top: 0; left: 0; bottom: 0; width: 84%; max-width: 320px; background: #3d1c08; color: #fff; z-index: 300; transform: translateX(-105%); transition: transform .22s; overflow-y: auto; }
+      .drawer.open { transform: translateX(0); }
+      .drawer a { display: block; color: #f5e6d3; text-decoration: none; padding: 12px 16px; }
+      .drawer .sub { padding-left: 28px; font-size: 0.92rem; }
+      .drawer .sub2 { padding-left: 42px; font-size: 0.86rem; }
+      .topbar { display: none; }
     }
   </style>
 </head>
@@ -62,55 +65,87 @@
 {% set children_map = nav_children if nav_children is defined else {} %}
   <div class="google-translate"><div id="google_translate_element"></div></div>
   <div class="nav-overlay" id="navOverlay"></div>
+
   <div class="mobile-bar">
-    <button type="button" class="menu-toggle" id="menuToggle">☰ मेनू</button>
+    <button type="button" class="menu-toggle" id="menuToggle">☰ विषय</button>
     <strong>Nexus Vidya</strong>
-    <a href="{{ url_for('contact_page') }}" style="color:#fff;text-decoration:none;font-size:1.2rem;">📞</a>
+    <a href="{{ url_for('contact_page') }}" style="color:#fff;text-decoration:none;">📞</a>
   </div>
-  <aside class="public-sidebar" id="sideNav">
-    <div class="sidebar-logo">
-      <button type="button" class="nav-close" id="menuClose">✕</button>
-      <a href="{{ url_for('index') }}">
-        <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}" onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'" alt="Nexus Vidya">
-      </a>
-      <div class="sidebar-tagline">ज्ञान का केंद्र</div>
+
+  <aside class="drawer" id="sideNav">
+    <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;">
+      <b>विषय</b>
+      <button type="button" id="menuClose" style="background:none;border:0;color:#fff;font-size:1.4rem;">✕</button>
     </div>
-    <form class="side-search" action="{{ url_for('search') }}" method="get">
-      <input type="search" name="q" placeholder="खोजें..." value="{{ request.args.get('q','') }}">
-    </form>
-    <nav class="sidebar-nav">
-      <a href="{{ url_for('index') }}">🏠 होम</a>
-      {% for cat in nav_categories %}
-      <a href="{{ url_for('category_page', slug=cat.slug) }}">{{ cat.icon or '📚' }} {{ cat.name }}</a>
-      {% if children_map.get(cat.id) %}
-      <div class="nav-children">
-        {% for sub in children_map.get(cat.id) %}
-        <a href="{{ url_for('category_page', slug=sub.slug) }}">└ {{ sub.name }}</a>
-        {% endfor %}
-      </div>
-      {% endif %}
+    <a href="{{ url_for('index') }}">🏠 होम</a>
+    {% for cat in nav_categories %}
+    <a href="{{ url_for('category_page', slug=cat.slug) }}">{{ cat.icon or '📚' }} {{ cat.name }}</a>
+    {% for sub in children_map.get(cat.id, []) %}
+    <a class="sub" href="{{ url_for('category_page', slug=sub.slug) }}">└ {{ sub.name }}</a>
+      {% for sub2 in children_map.get(sub.id, []) %}
+      <a class="sub2" href="{{ url_for('category_page', slug=sub2.slug) }}">└ {{ sub2.name }}</a>
       {% endfor %}
-      <a href="{{ url_for('contact_page') }}">📞 संपर्क / परामर्श</a>
-    </nav>
-    <div class="sidebar-bottom">
-      <a class="contact-btn" href="https://wa.me/917317055531" target="_blank" rel="noopener">💬 WhatsApp</a>
-      <a class="admin-quiet" href="{{ url_for('admin_login') }}">एडमिन</a>
-    </div>
+    {% endfor %}
+    {% endfor %}
+    <a href="{{ url_for('contact_page') }}">📞 संपर्क</a>
+    <a href="https://wa.me/917317055531">💬 WhatsApp</a>
   </aside>
-  <div class="public-main">
-    <div class="content-area">{% block content %}{% endblock %}</div>
-    <footer class="site-footer">
-      <p>&copy; 2026 Nexus Vidya</p>
-      <p><a href="{{ url_for('contact_page') }}">परामर्श</a> · <a href="https://wa.me/917317055531">7317055531</a></p>
-    </footer>
-  </div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/nexusvidya.jpeg') }}" onerror="this.src='{{ url_for('static', filename='images/logo.png') }}'" alt="Nexus Vidya">
+        <span>Nexus Vidya</span>
+      </a>
+      <form class="top-search" action="{{ url_for('search') }}" method="get">
+        <input type="search" name="q" placeholder="खोजें..." value="{{ request.args.get('q','') }}">
+        <button type="submit">खोज</button>
+      </form>
+    </div>
+  </header>
+
+  <nav class="menubar">
+    <div class="menubar-inner">
+      <div class="menu-item"><a href="{{ url_for('index') }}">होम</a></div>
+      {% for cat in nav_categories %}
+      <div class="menu-item">
+        <a href="{{ url_for('category_page', slug=cat.slug) }}">{{ cat.name }}{% if children_map.get(cat.id) %} ▾{% endif %}</a>
+        {% if children_map.get(cat.id) %}
+        <div class="dropdown">
+          {% for sub in children_map.get(cat.id) %}
+            {% if children_map.get(sub.id) %}
+            <div class="has-sub">
+              <a href="{{ url_for('category_page', slug=sub.slug) }}">{{ sub.name }} <span>▸</span></a>
+              <div class="flyout">
+                {% for sub2 in children_map.get(sub.id) %}
+                <a href="{{ url_for('category_page', slug=sub2.slug) }}">{{ sub2.name }}</a>
+                {% endfor %}
+              </div>
+            </div>
+            {% else %}
+            <a href="{{ url_for('category_page', slug=sub.slug) }}">{{ sub.name }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      <div class="menu-item"><a href="{{ url_for('contact_page') }}">संपर्क</a></div>
+    </div>
+  </nav>
+
+  <main class="content-wrap">{% block content %}{% endblock %}</main>
+  <footer class="site-footer">
+    <p>&copy; 2026 Nexus Vidya</p>
+    <p><a href="{{ url_for('contact_page') }}">परामर्श</a> · <a href="https://wa.me/917317055531">7317055531</a></p>
+  </footer>
   <a href="https://wa.me/917317055531" class="whatsapp-float" target="_blank" rel="noopener">💬</a>
   <script>
     (function(){
       var nav = document.getElementById('sideNav');
       var overlay = document.getElementById('navOverlay');
-      function openNav(){ nav.classList.add('open'); overlay.classList.add('show'); document.body.style.overflow='hidden'; }
-      function closeNav(){ nav.classList.remove('open'); overlay.classList.remove('show'); document.body.style.overflow=''; }
+      function openNav(){ nav.classList.add('open'); overlay.classList.add('show'); }
+      function closeNav(){ nav.classList.remove('open'); overlay.classList.remove('show'); }
       var t = document.getElementById('menuToggle');
       var c = document.getElementById('menuClose');
       if (t) t.addEventListener('click', openNav);
